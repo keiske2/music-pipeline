@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pipeline CMD">
+<title>Pipeline Commander</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #1a1a26;
+  --bg4: #222233;
+  --accent: #6c5ce7;
+  --accent2: #a29bfe;
+  --accent-glow: rgba(108,92,231,0.15);
+  --success: #00b894;
+  --warning: #fdcb6e;
+  --danger: #e17055;
+  --text: #e8e6f0;
+  --text2: #9b97b0;
+  --text3: #5f5b78;
+  --border: rgba(108,92,231,0.2);
+  --coral: #e17055;
+  --teal: #00cec9;
+  --pink: #fd79a8;
+  --amber: #ffc048;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html { background: var(--bg); }
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  overflow-x: hidden;
+}
+
+/* Animated background */
+body::before {
+  content: '';
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background:
+    radial-gradient(ellipse at 20% 20%, rgba(108,92,231,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(0,206,201,0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative; z-index: 1;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 20px 16px 100px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 16px 0 24px;
+}
+.header-icon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--accent), var(--teal));
+  border-radius: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 32px rgba(108,92,231,0.3);
+}
+.header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--text), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header p {
+  font-size: 12px;
+  color: var(--text3);
+  margin-top: 4px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Section */
+.section {
+  margin-bottom: 20px;
+}
+.section-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+  padding-left: 2px;
+}
+.section-label .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Card */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: border-color 0.3s;
+}
+.card:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* Input */
+.input-group { margin-bottom: 14px; }
+.input-group:last-child { margin-bottom: 0; }
+.input-label {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+.input-label .badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+}
+.badge-required { background: rgba(225,112,85,0.15); color: var(--coral); }
+.badge-optional { background: rgba(0,206,201,0.1); color: var(--teal); }
+
+input[type="text"], textarea, select {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: var(--text);
+  font-family: 'Noto Sans KR', sans-serif;
+  transition: all 0.2s;
+  -webkit-appearance: none;
+}
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg4);
+}
+textarea { resize: none; min-height: 60px; line-height: 1.5; }
+input::placeholder, textarea::placeholder { color: var(--text3); font-size: 13px; }
+select { cursor: pointer; }
+select option { background: var(--bg2); color: var(--text); }
+
+/* Slider */
+.slider-group { margin-bottom: 16px; }
+.slider-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.slider-title {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text2);
+}
+.slider-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  min-width: 42px;
+  text-align: right;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--bg3);
+}
+.slider-desc {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg4);
+  outline: none;
+  padding: 0;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg2);
+  box-shadow: 0 2px 8px rgba(108,92,231,0.4);
+  cursor: pointer;
+}
+
+/* Chips (toggle buttons) */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(108,92,231,0.3);
+}
+.chip:active { transform: scale(0.95); }
+
+/* Platform chips with colors */
+.chip-youtube.active { background: #c4302b; border-color: #c4302b; }
+.chip-instagram.active { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); border-color: #833ab4; }
+.chip-tiktok.active { background: #010101; border-color: #69c9d0; color: #69c9d0; }
+.chip-shorts.active { background: #c4302b; border-color: #c4302b; }
+
+/* Toggle switch */
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(108,92,231,0.08);
+}
+.toggle-row:last-child { border-bottom: none; }
+.toggle-info {
+  flex: 1;
+}
+.toggle-title {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 400;
+}
+.toggle-desc {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+.toggle-switch {
+  position: relative;
+  width: 44px; height: 26px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+.toggle-switch input { display: none; }
+.toggle-track {
+  position: absolute; top:0; left:0; right:0; bottom:0;
+  background: var(--bg4);
+  border-radius: 13px;
+  transition: background 0.3s;
+}
+.toggle-switch input:checked + .toggle-track { background: var(--accent); }
+.toggle-knob {
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 20px; height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.toggle-switch input:checked ~ .toggle-knob { transform: translateX(18px); }
+
+/* Collapsible */
+.collapsible-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0;
+  cursor: pointer;
+  user-select: none;
+}
+.collapsible-header span {
+  font-size: 13px;
+  color: var(--accent2);
+  font-weight: 500;
+}
+.collapsible-arrow {
+  font-size: 12px;
+  color: var(--text3);
+  transition: transform 0.3s;
+}
+.collapsible-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+.collapsible-body.open { max-height: 800px; }
+.collapsible-arrow.open { transform: rotate(180deg); }
+
+/* Presets row */
+.presets {
+  display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto;
+  scrollbar-width: none; -ms-overflow-style: none;
+  padding-bottom: 2px;
+}
+.presets::-webkit-scrollbar { display: none; }
+.preset-btn {
+  white-space: nowrap;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg3);
+  color: var(--text2);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+.preset-btn:active { transform: scale(0.95); }
+.preset-btn.active {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  color: var(--accent2);
+}
+
+/* Submit button */
+.submit-area {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--bg) 60%, transparent);
+  z-index: 10;
+}
+.submit-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--accent), #8b7cf7);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 8px 32px rgba(108,92,231,0.4);
+  position: relative;
+  overflow: hidden;
+}
+.submit-btn:active { transform: scale(0.97); }
+.submit-btn::after {
+  content: '';
+  position: absolute; top:0; left:-100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  transition: left 0.5s;
+}
+.submit-btn:active::after { left: 100%; }
+.submit-btn.sending {
+  background: var(--bg3);
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* Status toast */
+.toast {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top));
+  left: 50%; transform: translateX(-50%) translateY(-120px);
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 100;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast-success { background: rgba(0,184,148,0.9); color: #fff; }
+.toast-error { background: rgba(225,112,85,0.9); color: #fff; }
+
+/* JSON preview */
+.json-preview {
+  margin-top: 16px;
+  background: var(--bg3);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.json-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg4);
+  cursor: pointer;
+}
+.json-header span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+}
+.json-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.3s;
+}
+.json-body.open { max-height: 600px; overflow-y: auto; }
+.json-body pre {
+  padding: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--accent2);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Animations */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.section { animation: fadeUp 0.5s ease both; }
+.section:nth-child(2) { animation-delay: 0.05s; }
+.section:nth-child(3) { animation-delay: 0.1s; }
+.section:nth-child(4) { animation-delay: 0.15s; }
+.section:nth-child(5) { animation-delay: 0.2s; }
+.section:nth-child(6) { animation-delay: 0.25s; }
+.section:nth-child(7) { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-icon">▶</div>
+    <h1>Pipeline Commander</h1>
+    <p>v1.0 — content automation control</p>
+  </div>
+
+  <!-- 1. 핵심 입력 -->
+  <div class="section">
+    <div class="section-label"><span class="dot"></span>핵심 설정</div>
+    <div class="card">
+      <div class="input-group">
+        <div class="input-label">
+          <span>노래 키워드</span>
+          <span class="badge badge-required">필수</span>
+        </div>
+        <input type="text" id="keyword" placeholder="예: 새벽 감성, 이별 후 혼자 걷는 밤">
+      </div>
+      <div class="input-group">
+        <div class="input-label">
+          <span>노래 스타일 / 장르</span>
+          <span class="badge badge-required">필수</span>
+        </div>
+        <input type="text" id="style" placeholder="예: lo-fi chill, K-R&B, ambient pop">
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span>빠른 프리셋</span></div>
+        <div class="presets" id="presets">
+          <button class="preset-btn" data-style="lo-fi chill" data-w="35" data-s="75" data-a="50">☕ 로파이</button>
+          <button class="preset-btn" data-style="K-R&B ballad" data-w="30" data-s="85" data-a="60">🎤 K-R&B</button>
+          <button class="preset-btn" data-style="ambient electronic" data-w="55" data-s="60" data-a="45">🌌 앰비언트</button>
+          <button class="preset-btn" data-style="trap hip-hop" data-w="45" data-s="80" data-a="55">🔥 트랩</button>
+          <button class="preset-btn" data-style="acoustic folk" data-w="25" data-s="90" data-a="40">🪕 어쿠스틱</button>
+          <button class="preset-btn" data-style="city pop retro" data-w="40" data-s="78" data-a="50">🌃 시티팝</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Suno AI 파라미터 -->
+  <div class="section">
+    <div class="section-label"><span class="dot" style="background:var(--coral)"></span>Suno AI 파라미터</div>
+    <div class="card">
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-title">Weirdness</span>
+          <span class="slider-value" id="weirdVal" style="color:var(--amber)">23%</span>
+        </div>
+        <input type="range" id="weirdness" min="0" max="100" value="23"
+          style="background:linear-gradient(to right, var(--amber) 23%, var(--bg4) 23%)"
+          oninput="updateSlider(this,'weirdVal','--amber')">
+        <div class="slider-desc">낮을수록 안정적이고 장르에 충실, 높을수록 실험적이고 예측불가</div>
+      </div>
+      <div class="slider-group">
+        <div class="slider-header">
+          <span class="slider-title">Style Influence</span>
+          <span class="slider-value" id="styleVal" style="color:var(--teal)">89%</span>
+        </div>
+        <input type="range" id="styleInfluence" min="0" max="100" value="89"
+          style="background:linear-gradient(to right, var(--teal) 89%, var(--bg4) 89%)"
+          oninput="updateSlider(this,'styleVal','--teal')">
+        <div class="slider-desc">높을수록 스타일 프롬프트를 강하게 따름, 낮으면 자유 해석</div>
+      </div>
+      <div class="slider-group" style="margin-bottom:0">
+        <div class="slider-header">
+          <span class="slider-title">Audio Influence</span>
+          <span class="slider-value" id="audioVal" style="color:var(--pink)">67%</span>
+        </div>
+        <input type="range" id="audioInfluence" min="0" max="100" value="67"
+          style="background:linear-gradient(to right, var(--pink) 67%, var(--bg4) 67%)"
+          oninput="updateSlider(this,'audioVal','--pink')">
+        <div class="slider-desc">업로드 오디오가 결과를 얼마나 주도할지 결정 (업로드 시 활성)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 세부 파라미터 (접이식) -->
+  <div class="section">
+    <div class="section-label"><span class="dot" style="background:var(--teal)"></span>세부 옵션</div>
+    <div class="card">
+      <div class="input-group">
+        <div class="input-label">
+          <span>노래 등장인물 / 화자</span>
+          <span class="badge badge-optional">선택</span>
+        </div>
+        <input type="text" id="character" placeholder="예: 20대 여성, 혼자 여행하는 청년">
+      </div>
+      <div class="input-group">
+        <div class="input-label">
+          <span>보컬 스타일</span>
+          <span class="badge badge-optional">선택</span>
+        </div>
+        <select id="vocalStyle">
+          <option value="">자동 (스타일에 맞춤)</option>
+          <option value="soft female vocal">소프트 여성 보컬</option>
+          <option value="deep male vocal">딥 남성 보컬</option>
+          <option value="dreamy whisper vocal">몽환 위스퍼 보컬</option>
+          <option value="powerful belting vocal">파워풀 벨팅 보컬</option>
+          <option value="raspy indie vocal">래스피 인디 보컬</option>
+          <option value="smooth R&B vocal">스무스 R&B 보컬</option>
+          <option value="rap vocal, rhythmic flow">랩 보컬</option>
+          <option value="choir, harmony vocals">코러스 / 하모니</option>
+          <option value="instrumental only">인스트루멘탈 (보컬 없음)</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <div class="input-label">
+          <span>노래 속도 (BPM)</span>
+          <span class="badge badge-optional">선택</span>
+        </div>
+        <select id="tempo">
+          <option value="">자동</option>
+          <option value="60-80">🐌 느림 (60-80 BPM)</option>
+          <option value="80-100">🚶 보통 느림 (80-100)</option>
+          <option value="100-120">🚶‍♂️ 보통 (100-120)</option>
+          <option value="120-140">🏃 빠름 (120-140)</option>
+          <option value="140-170">⚡ 매우 빠름 (140-170)</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <div class="input-label">
+          <span>노래 분위기 / 무드</span>
+          <span class="badge badge-optional">선택</span>
+        </div>
+        <input type="text" id="mood" placeholder="예: 몽환적, 쓸쓸한, 희망적, 에너제틱">
+      </div>
+
+      <!-- 추가 옵션 접이식 -->
+      <div class="collapsible-header" onclick="toggleCollapsible(this)">
+        <span>고급 옵션 더보기</span>
+        <span class="collapsible-arrow">▼</span>
+      </div>
+      <div class="collapsible-body">
+        <div class="input-group">
+          <div class="input-label"><span>노래 언어</span></div>
+          <select id="language">
+            <option value="korean">한국어</option>
+            <option value="english">영어</option>
+            <option value="japanese">일본어</option>
+            <option value="mixed korean english">한영 믹스</option>
+            <option value="instrumental">인스트루멘탈</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <div class="input-label"><span>노래 길이</span></div>
+          <select id="duration">
+            <option value="short">짧게 (~1분)</option>
+            <option value="medium" selected>보통 (~2분)</option>
+            <option value="long">길게 (~3분+)</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <div class="input-label"><span>악기 지정</span></div>
+          <input type="text" id="instruments" placeholder="예: 피아노, 어쿠스틱 기타, 신스패드">
+        </div>
+        <div class="input-group" style="margin-bottom:0">
+          <div class="input-label"><span>참고 아티스트 / 레퍼런스</span></div>
+          <input type="text" id="reference" placeholder="예: 데이식스 느낌, 잔나비 스타일">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 영상 설정 -->
+  <div class="section">
+    <div class="section-label"><span class="dot" style="background:var(--accent2)"></span>영상 설정</div>
+    <div class="card">
+      <div class="input-group">
+        <div class="input-label"><span>영상 스타일</span></div>
+        <select id="videoStyle">
+          <option value="boomerang">🔄 부메랑 (8초 루프)</option>
+          <option value="slideshow">🖼 슬라이드쇼 (페이드)</option>
+          <option value="zoom_pan">🔍 줌 & 팬 (Ken Burns)</option>
+          <option value="lyrics_video">📝 가사 비디오</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <div class="input-label"><span>이미지 생성 스타일</span></div>
+        <select id="imageStyle">
+          <option value="cinematic">🎬 시네마틱</option>
+          <option value="anime">🎨 애니메이션</option>
+          <option value="watercolor">🖌 수채화</option>
+          <option value="photo_realistic">📸 포토리얼</option>
+          <option value="abstract">🌀 추상적</option>
+          <option value="retro_vintage">📻 레트로/빈티지</option>
+        </select>
+      </div>
+      <div class="input-group" style="margin-bottom:0">
+        <div class="input-label"><span>영상 추가 지시</span><span class="badge badge-optional">선택</span></div>
+        <textarea id="videoNote" rows="2" placeholder="예: 일몰 장면 위주, 도시 야경 느낌, 자연 풍경"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 업로드 플랫폼 -->
+  <div class="section">
+    <div class="section-label"><span class="dot" style="background:var(--danger)"></span>업로드 플랫폼</div>
+    <div class="card">
+      <div class="chips">
+        <button class="chip chip-youtube active" onclick="toggleChip(this)" data-platform="youtube">▶ YouTube</button>
+        <button class="chip chip-shorts" onclick="toggleChip(this)" data-platform="youtube_shorts">📱 Shorts</button>
+        <button class="chip chip-instagram" onclick="toggleChip(this)" data-platform="instagram_reels">📷 Reels</button>
+        <button class="chip chip-tiktok" onclick="toggleChip(this)" data-platform="tiktok">♪ TikTok</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. 후처리 옵션 -->
+  <div class="section">
+    <div class="section-label"><span class="dot" style="background:var(--success)"></span>후처리 + 발행</div>
+    <div class="card" style="padding:10px 16px">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">GPT 가사 자동 생성</div>
+          <div class="toggle-desc">ChatGPT가 키워드 기반 가사 생성</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoLyrics" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-knob"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">GPT 이미지 프롬프트 생성</div>
+          <div class="toggle-desc">노래에 맞는 이미지 프롬프트 자동 생성</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoImage" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-knob"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">Gemini 부메랑 영상 생성</div>
+          <div class="toggle-desc">이미지 → 8초 생동감 부메랑 영상</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoVideo" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-knob"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">CapCut 자동 편집</div>
+          <div class="toggle-desc">음악 + 영상 + 썸네일 자동 합성</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoCapcut" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-knob"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">해시태그 조회수 최적화</div>
+          <div class="toggle-desc">GPT가 조회수 높은 해시태그 자동 선택</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoHashtag" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-knob"></div>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <div class="toggle-title">설명란 가사 삽입</div>
+          <div class="toggle-desc">가사만 추출하여 설명란에 자동 삽입</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoDesc" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-knob"></div>
+        </label>
+      </div>
+      <div class="toggle-row" style="border-bottom:none">
+        <div class="toggle-info">
+          <div class="toggle-title">Telegram 발행 알림</div>
+          <div class="toggle-desc">업로드 완료 시 텔레그램으로 결과 전송</div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="autoNotify" checked>
+          <div class="toggle-track"></div>
+          <div class="toggle-knob"></div>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- 서버 설정 -->
+  <div class="section">
+    <div class="section-label"><span class="dot" style="background:var(--text3)"></span>서버 연결</div>
+    <div class="card">
+      <div class="input-group" style="margin-bottom:0">
+        <div class="input-label">
+          <span>맥북 서버 주소</span>
+          <span class="badge badge-required" id="connBadge" style="background:rgba(225,112,85,0.15);color:var(--coral)">미연결</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="serverUrl" placeholder="http://192.168.x.x:8080" style="flex:1"
+            value="">
+          <button onclick="testConnection()" style="padding:8px 16px;border-radius:10px;border:1px solid var(--accent);background:var(--bg3);color:var(--accent2);font-size:13px;white-space:nowrap;cursor:pointer">테스트</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON Preview -->
+  <div class="section">
+    <div class="json-preview">
+      <div class="json-header" onclick="toggleJson()">
+        <span>{ } 생성될 JSON 미리보기</span>
+        <span id="jsonArrow" style="font-size:12px;color:var(--text3)">▼</span>
+      </div>
+      <div class="json-body" id="jsonBody">
+        <pre id="jsonOutput"></pre>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Submit Button -->
+<div class="submit-area">
+  <button class="submit-btn" id="submitBtn" onclick="submitPipeline()">
+    <span id="btnText">🚀 파이프라인 실행</span>
+  </button>
+</div>
+
+<!-- Toast -->
+<div class="toast toast-success" id="toast"></div>
+
+<script>
+// Slider update
+function updateSlider(el, labelId, colorVar) {
+  const val = el.value;
+  document.getElementById(labelId).textContent = val + '%';
+  const color = getComputedStyle(document.documentElement).getPropertyValue(colorVar).trim();
+  el.style.background = `linear-gradient(to right, ${color} ${val}%, var(--bg4) ${val}%)`;
+  updateJsonPreview();
+}
+
+// Chip toggle
+function toggleChip(el) {
+  el.classList.toggle('active');
+  updateJsonPreview();
+}
+
+// Preset
+document.getElementById('presets').addEventListener('click', e => {
+  const btn = e.target.closest('.preset-btn');
+  if (!btn) return;
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  const style = btn.dataset.style;
+  const w = parseInt(btn.dataset.w);
+  const s = parseInt(btn.dataset.s);
+  const a = parseInt(btn.dataset.a);
+  
+  document.getElementById('style').value = style;
+  document.getElementById('weirdness').value = w;
+  document.getElementById('styleInfluence').value = s;
+  document.getElementById('audioInfluence').value = a;
+  
+  updateSlider(document.getElementById('weirdness'), 'weirdVal', '--amber');
+  updateSlider(document.getElementById('styleInfluence'), 'styleVal', '--teal');
+  updateSlider(document.getElementById('audioInfluence'), 'audioVal', '--pink');
+});
+
+// Collapsible
+function toggleCollapsible(header) {
+  const body = header.nextElementSibling;
+  const arrow = header.querySelector('.collapsible-arrow');
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+// JSON toggle
+function toggleJson() {
+  const body = document.getElementById('jsonBody');
+  body.classList.toggle('open');
+  updateJsonPreview();
+}
+
+// Build JSON
+function buildPayload() {
+  const platforms = [];
+  document.querySelectorAll('.chip.active').forEach(c => platforms.push(c.dataset.platform));
+  
+  const payload = {
+    timestamp: new Date().toISOString(),
+    core: {
+      keyword: document.getElementById('keyword').value || null,
+      style: document.getElementById('style').value || null,
+    },
+    suno_params: {
+      weirdness: parseInt(document.getElementById('weirdness').value),
+      style_influence: parseInt(document.getElementById('styleInfluence').value),
+      audio_influence: parseInt(document.getElementById('audioInfluence').value),
+    },
+    details: {
+      character: document.getElementById('character').value || null,
+      vocal_style: document.getElementById('vocalStyle').value || null,
+      tempo_bpm: document.getElementById('tempo').value || null,
+      mood: document.getElementById('mood').value || null,
+      language: document.getElementById('language').value,
+      duration: document.getElementById('duration').value,
+      instruments: document.getElementById('instruments').value || null,
+      reference: document.getElementById('reference').value || null,
+    },
+    video: {
+      style: document.getElementById('videoStyle').value,
+      image_style: document.getElementById('imageStyle').value,
+      note: document.getElementById('videoNote').value || null,
+    },
+    platforms: platforms,
+    pipeline: {
+      gpt_lyrics: document.getElementById('autoLyrics').checked,
+      gpt_image_prompt: document.getElementById('autoImage').checked,
+      gemini_boomerang: document.getElementById('autoVideo').checked,
+      capcut_edit: document.getElementById('autoCapcut').checked,
+      hashtag_optimize: document.getElementById('autoHashtag').checked,
+      lyrics_in_description: document.getElementById('autoDesc').checked,
+      telegram_notify: document.getElementById('autoNotify').checked,
+    }
+  };
+  
+  // Clean nulls from details
+  Object.keys(payload.details).forEach(k => {
+    if (payload.details[k] === null || payload.details[k] === '') delete payload.details[k];
+  });
+  if (payload.video.note === null) delete payload.video.note;
+  if (!payload.core.keyword) delete payload.core.keyword;
+  
+  return payload;
+}
+
+function updateJsonPreview() {
+  const pre = document.getElementById('jsonOutput');
+  if (pre) pre.textContent = JSON.stringify(buildPayload(), null, 2);
+}
+
+// Listen for all input changes
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', updateJsonPreview);
+  el.addEventListener('change', updateJsonPreview);
+});
+
+// Submit
+async function submitPipeline() {
+  const keyword = document.getElementById('keyword').value.trim();
+  if (!keyword) {
+    showToast('키워드를 입력해주세요', 'error');
+    document.getElementById('keyword').focus();
+    return;
+  }
+  
+  const style = document.getElementById('style').value.trim();
+  if (!style) {
+    showToast('노래 스타일을 입력해주세요', 'error');
+    document.getElementById('style').focus();
+    return;
+  }
+  
+  const platforms = document.querySelectorAll('.chip.active');
+  if (platforms.length === 0) {
+    showToast('업로드 플랫폼을 선택해주세요', 'error');
+    return;
+  }
+  
+  const btn = document.getElementById('submitBtn');
+  const btnText = document.getElementById('btnText');
+  btn.classList.add('sending');
+  btnText.textContent = '⏳ 전송 중...';
+  
+  const payload = buildPayload();
+  
+  // Copy to clipboard as fallback
+  try {
+    await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+  } catch(e) {}
+  
+  // POST to your MacBook server
+  const savedUrl = localStorage.getItem('pipeline_server_url');
+  const SERVER_URL = savedUrl || 'http://YOUR_MACBOOK_IP:8080/api/pipeline';
+  
+  try {
+    const res = await fetch(SERVER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      showToast('✅ 파이프라인 전송 완료!', 'success');
+    } else {
+      throw new Error('Server error');
+    }
+  } catch(e) {
+    // Server not reachable — JSON is already on clipboard
+    showToast('📋 JSON 클립보드 복사됨 (서버 미연결)', 'success');
+  }
+  
+  setTimeout(() => {
+    btn.classList.remove('sending');
+    btnText.textContent = '🚀 파이프라인 실행';
+  }, 2000);
+}
+
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast toast-${type} show`;
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Server URL management
+async function testConnection() {
+  const url = document.getElementById('serverUrl').value.trim();
+  if (!url) { showToast('서버 주소를 입력하세요', 'error'); return; }
+  
+  const badge = document.getElementById('connBadge');
+  badge.textContent = '확인 중...';
+  badge.style.background = 'rgba(253,203,110,0.15)';
+  badge.style.color = 'var(--warning)';
+  
+  try {
+    const res = await fetch(url.replace(/\/api\/pipeline$/, '') + '/health', { 
+      method: 'GET',
+      signal: AbortSignal.timeout(5000),
+    });
+    if (res.ok) {
+      localStorage.setItem('pipeline_server_url', url.replace(/\/$/, '') + '/api/pipeline');
+      badge.textContent = '연결됨';
+      badge.style.background = 'rgba(0,184,148,0.15)';
+      badge.style.color = 'var(--success)';
+      showToast('✅ 서버 연결 성공!', 'success');
+    } else { throw new Error('not ok'); }
+  } catch(e) {
+    badge.textContent = '미연결';
+    badge.style.background = 'rgba(225,112,85,0.15)';
+    badge.style.color = 'var(--coral)';
+    showToast('서버에 연결할 수 없습니다', 'error');
+  }
+}
+
+// Restore saved server URL
+const savedServerUrl = localStorage.getItem('pipeline_server_url');
+if (savedServerUrl) {
+  document.getElementById('serverUrl').value = savedServerUrl.replace('/api/pipeline', '');
+  // Auto-test on load
+  setTimeout(testConnection, 1000);
+}
+
+// Init
+updateJsonPreview();
+</script>
+</body>
+</html>
