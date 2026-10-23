@@ -24,6 +24,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 
 from pipeline import run_pipeline, WORK_DIR, OUTPUT_DIR
+from latin_styles import next_payload
 
 # ── 설정 ──────────────────────────────────────────────────────
 load_dotenv(WORK_DIR / ".env")
@@ -115,6 +116,21 @@ def api_queue_delete(queue_id):
     return jsonify({"error": "not found"}), 404
 
 
+@app.route("/api/latin/preview", methods=["GET"])
+def api_latin_preview():
+    """다음에 자동 생성될 라틴 댄스 곡 설정 미리보기 (기록 안 함)."""
+    return jsonify(next_payload())
+
+
+@app.route("/api/latin/run", methods=["POST"])
+def api_latin_run():
+    """오늘의 라틴 댄스 곡을 자동 설정으로 즉시 생성·업로드."""
+    payload = next_payload()
+    Thread(target=run_pipeline, args=(payload,), daemon=True).start()
+    logger.info(f"라틴 자동 실행: {payload['rotation']}")
+    return jsonify({"status": "started", "rotation": payload["rotation"]}), 202
+
+
 @app.route("/api/status", methods=["GET"])
 def api_status():
     """최근 작업 상태 확인."""
@@ -159,11 +175,14 @@ def serve_ui():
 
 def scheduler_loop():
     """큐에 있는 작업을 정해진 시간에 실행."""
-    schedule_1 = os.getenv("SCHEDULE_TIME_1", "10:00")
-    schedule_2 = os.getenv("SCHEDULE_TIME_2", "16:00")
+    # SCHEDULE_TIME_2를 비워두면 하루 1회만 실행
+    schedules = [t for t in (os.getenv("SCHEDULE_TIME_1", "10:00"),
+                             os.getenv("SCHEDULE_TIME_2", "")) if t.strip()]
+    # 큐가 비어 있으면 라틴 댄스 곡을 자동 설정으로 생성
+    auto_latin = os.getenv("AUTO_LATIN_DAILY", "1") == "1"
     executed_today = set()
 
-    logger.info(f"스케줄러 시작: {schedule_1}, {schedule_2}")
+    logger.info(f"스케줄러 시작: {', '.join(schedules)} (라틴 자동생성: {auto_latin})")
 
     while True:
         now = datetime.now()
@@ -174,7 +193,7 @@ def scheduler_loop():
         if any(d[:8] != today for d in executed_today) if executed_today else False:
             executed_today.clear()
 
-        for schedule_time in [schedule_1, schedule_2]:
+        for schedule_time in schedules:
             schedule_key = f"{today}_{schedule_time}"
 
             if current_time == schedule_time and schedule_key not in executed_today:
@@ -192,6 +211,11 @@ def scheduler_loop():
                         target=run_pipeline, args=(payload,), daemon=True
                     )
                     thread.start()
+                elif auto_latin:
+                    payload = next_payload()
+                    logger.info(f"스케줄 실행 ({schedule_time}): 라틴 자동 생성 "
+                                f"{payload['rotation']}")
+                    Thread(target=run_pipeline, args=(payload,), daemon=True).start()
                 else:
                     logger.info(f"스케줄 시간 ({schedule_time}) 이지만 큐가 비어있음")
 

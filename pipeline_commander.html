@@ -59,7 +59,7 @@ body::before {
   position: relative; z-index: 1;
   max-width: 420px;
   margin: 0 auto;
-  padding: 20px 16px 100px;
+  padding: 20px 16px 164px;
 }
 
 /* Header */
@@ -337,6 +337,21 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--accent-glow);
   border-color: var(--accent);
   color: var(--accent2);
+}
+
+/* Latin auto button */
+.latin-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; max-width: 420px;
+  margin: 0 auto 8px;
+  padding: 12px;
+  border: 1px solid #ff5fa2;
+  border-radius: 14px;
+  background: rgba(255,95,162,0.12);
+  color: #ff9cc8;
+  font-size: 14px; font-weight: 700;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer;
 }
 
 /* Submit button */
@@ -774,6 +789,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 <!-- Submit Button -->
 <div class="submit-area">
+  <button class="latin-btn" id="latinBtn" onclick="runLatinAuto()">💃 오늘의 라틴 댄스곡 자동 생성</button>
   <button class="submit-btn" id="submitBtn" onclick="submitPipeline()">
     <span id="btnText">🚀 파이프라인 실행</span>
   </button>
@@ -957,6 +973,23 @@ async function submitPipeline() {
     btn.classList.remove('sending');
     btnText.textContent = '🚀 파이프라인 실행';
   }, 2000);
+}
+
+// 스타일 로테이션으로 오늘의 라틴 댄스곡 자동 생성
+async function runLatinAuto() {
+  const savedUrl = localStorage.getItem('pipeline_server_url');
+  if (!savedUrl) { showToast('먼저 서버 주소를 연결하세요', 'error'); return; }
+  const btn = document.getElementById('latinBtn');
+  btn.disabled = true;
+  try {
+    const res = await fetch(savedUrl.replace(/\/api\/pipeline$/, '') + '/api/latin/run', { method: 'POST' });
+    if (!res.ok) throw new Error('Server error');
+    const data = await res.json();
+    showToast(`✅ ${data.rotation.style_id} · ${data.rotation.bpm} BPM 생성 시작`, 'success');
+  } catch(e) {
+    showToast('서버에 연결할 수 없습니다', 'error');
+  }
+  setTimeout(() => { btn.disabled = false; }, 2000);
 }
 
 function showToast(msg, type) {

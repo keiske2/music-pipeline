@@ -60,7 +60,8 @@ pip install -q \
     flask-cors \
     requests \
     python-dotenv \
-    Pillow
+    Pillow \
+    numpy
 
 # ── 7. Playwright 브라우저 설치 ───────────────────────────────
 echo "📦 Playwright Chromium 설치 중..."
@@ -77,9 +78,15 @@ if [ ! -f "$WORK/.env" ]; then
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 
-# 스케줄 시간 (24시간 형식)
+# 스케줄 시간 (24시간 형식) — 2번을 비우면 하루 1회
 SCHEDULE_TIME_1=10:00
-SCHEDULE_TIME_2=16:00
+SCHEDULE_TIME_2=
+
+# 큐가 비어 있으면 매일 다른 라틴 댄스 곡 자동 생성 (1=켜기, 0=끄기)
+AUTO_LATIN_DAILY=1
+
+# 영상 방식: techno(로컬 네온 루프, 기본) / gemini(DALL-E 이미지 + Gemini 영상)
+VIDEO_MODE=techno
 ENVEOF
     echo "⚠️  $WORK/.env 파일 생성됨 — Telegram 설정을 입력하세요"
 fi
