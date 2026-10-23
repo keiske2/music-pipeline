@@ -26,6 +26,7 @@ from pathlib import Path
 from datetime import datetime
 from playwright.sync_api import sync_playwright, Page, BrowserContext
 
+import browser_profile
 import techno_visual
 from latin_styles import record_used
 
@@ -40,8 +41,16 @@ OUTPUT_DIR = WORK_DIR / "outputs"
 # 유틸리티
 # ═══════════════════════════════════════════════════════════════
 
+def use_real_chrome() -> bool:
+    """BROWSER_MODE=chrome(기본): login_all.py로 로그인한 실제 Chrome 프로필 사용."""
+    return os.getenv("BROWSER_MODE", "chrome") == "chrome"
+
+
 def create_context(playwright, session_file: str) -> BrowserContext:
-    """저장된 세션으로 브라우저 컨텍스트 생성."""
+    """브라우저 컨텍스트 생성 (실제 Chrome 연결 또는 저장된 세션)."""
+    if use_real_chrome():
+        return browser_profile.connect(playwright)
+
     session_path = SESSION_DIR / session_file
     browser = playwright.chromium.launch(headless=True)
 
@@ -58,6 +67,14 @@ def create_context(playwright, session_file: str) -> BrowserContext:
         )
 
     return context
+
+
+def release_context(context: BrowserContext, page: Page):
+    """작업 탭 정리. 실제 Chrome은 로그인 유지를 위해 끄지 않고 탭만 닫는다."""
+    if use_real_chrome():
+        page.close()
+    else:
+        context.browser.close()
 
 
 def wait_and_click(page: Page, selector: str, timeout: int = 15000):
@@ -178,7 +195,7 @@ JSON 형식:
         return result
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -278,7 +295,7 @@ def step2_suno_generate(playwright, payload: dict, gpt_result: dict, job_dir: Pa
         return music_path
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -338,7 +355,7 @@ def step3_generate_image(playwright, gpt_result: dict, job_dir: Path) -> Path:
         return image_path
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -428,7 +445,7 @@ def step4_gemini_video(playwright, gpt_result: dict, image_path: Path, job_dir: 
         return video_path
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -603,7 +620,7 @@ def step6_youtube_upload(
         return video_url
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
