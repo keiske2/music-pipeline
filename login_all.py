@@ -20,6 +20,8 @@ from dotenv import load_dotenv
 
 import browser_profile
 
+QUIT_KEY = "창 닫기(X)로 모든 Chrome 창" if browser_profile.IS_WINDOWS else "Cmd+Q로 Chrome"
+
 load_dotenv(browser_profile.WORK_DIR / ".env")
 
 SERVICES = [
@@ -44,7 +46,7 @@ def main():
 
     if browser_profile.is_running():
         print("\n  ⚠️  파이프라인용 Chrome이 이미 실행 중입니다.")
-        print("     그 Chrome 창을 모두 닫은 뒤(Cmd+Q) 다시 실행하세요.")
+        print(f"     {QUIT_KEY}을 닫은 뒤 다시 실행하세요.")
         sys.exit(1)
 
     print()
@@ -57,15 +59,11 @@ def main():
 
     proc = browser_profile.launch_chrome([url for _, url in SERVICES], debug=False)
 
-    print("  로그인을 모두 마쳤으면 Chrome을 Cmd+Q로 완전히 종료하세요.")
+    print(f"  로그인을 모두 마쳤으면 {QUIT_KEY}을 닫아 완전히 종료하세요.")
     print("  (정상 종료해야 로그인 정보가 프로필에 확실히 저장됩니다)")
     input("  ➡️  Chrome 종료 후 Enter를 누르세요... ")
 
-    proc.terminate()
-    try:
-        proc.wait(timeout=15)
-    except Exception:
-        proc.kill()
+    browser_profile.close_chrome(proc)
 
     print()
     print("═══════════════════════════════════════════════")

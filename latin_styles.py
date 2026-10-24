@@ -206,7 +206,7 @@ PALETTES = [
 def load_history() -> list:
     if HISTORY_FILE.exists():
         try:
-            return json.loads(HISTORY_FILE.read_text())
+            return json.loads(HISTORY_FILE.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             return []
     return []
@@ -217,7 +217,7 @@ def record_used(rotation: dict):
     history = load_history()
     history.append({**rotation, "date": datetime.now().strftime("%Y-%m-%d %H:%M")})
     HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
-    HISTORY_FILE.write_text(json.dumps(history[-365:], ensure_ascii=False, indent=2))
+    HISTORY_FILE.write_text(json.dumps(history[-365:], ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def _pick_avoiding(options: list, recent: list, rng: random.Random):

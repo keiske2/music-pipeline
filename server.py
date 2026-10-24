@@ -39,7 +39,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler(LOG_DIR / "server.log"),
+        logging.FileHandler(LOG_DIR / "server.log", encoding="utf-8"),
         logging.StreamHandler(sys.stdout),
     ],
 )
@@ -82,7 +82,7 @@ def api_queue_add():
     # 큐에 저장
     queue_id = datetime.now().strftime("%Y%m%d_%H%M%S")
     queue_file = QUEUE_DIR / f"{queue_id}.json"
-    queue_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2))
+    queue_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     logger.info(f"큐 추가: '{payload['core']['keyword']}' → {queue_file.name}")
     return jsonify({
@@ -97,7 +97,7 @@ def api_queue_list():
     """큐 목록 조회."""
     items = []
     for f in sorted(QUEUE_DIR.glob("*.json")):
-        data = json.loads(f.read_text())
+        data = json.loads(f.read_text(encoding="utf-8"))
         items.append({
             "queue_id": f.stem,
             "keyword": data.get("core", {}).get("keyword", ""),
@@ -146,10 +146,10 @@ def api_status():
 
         info["completed"] = final.exists()
         if payload_file.exists():
-            p = json.loads(payload_file.read_text())
+            p = json.loads(payload_file.read_text(encoding="utf-8"))
             info["keyword"] = p.get("core", {}).get("keyword", "")
         if gpt_file.exists():
-            g = json.loads(gpt_file.read_text())
+            g = json.loads(gpt_file.read_text(encoding="utf-8"))
             info["title"] = g.get("title", "")
         recent.append(info)
     return jsonify({"jobs": recent})
@@ -201,7 +201,7 @@ def scheduler_loop():
                 queue_files = sorted(QUEUE_DIR.glob("*.json"))
                 if queue_files:
                     queue_file = queue_files[0]
-                    payload = json.loads(queue_file.read_text())
+                    payload = json.loads(queue_file.read_text(encoding="utf-8"))
                     queue_file.unlink()  # 큐에서 제거
 
                     logger.info(f"스케줄 실행 ({schedule_time}): "
@@ -236,13 +236,13 @@ if __name__ == "__main__":
     scheduler = Thread(target=scheduler_loop, daemon=True)
     scheduler.start()
 
-    # 맥북 IP 확인
-    import subprocess as sp
+    # 내부망 IP 확인 (macOS·Windows 공통, 실제 패킷은 보내지 않음)
+    import socket
     try:
-        ip = sp.check_output(
-            ["ipconfig", "getifaddr", "en0"], text=True
-        ).strip()
-    except:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.connect(("8.8.8.8", 80))
+            ip = sock.getsockname()[0]
+    except OSError:
         ip = "localhost"
 
     logger.info(f"서버 주소: http://{ip}:8080")

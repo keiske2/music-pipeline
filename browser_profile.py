@@ -9,24 +9,41 @@ Playwright가 원격 디버깅 포트(CDP)로 그 Chrome에 붙는다.
 - 프로필 폴더: ~/music_pipeline/chrome_profile (평소 쓰는 Chrome 프로필과 분리)
 - Google에 한 번 로그인하면 Suno·YouTube·Gemini가 같은 로그인을 공유
 
-.env 설정 (선택):
-    CHROME_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+.env 설정 (선택, 비우면 OS별 기본 설치 경로를 자동 탐색):
+    CHROME_PATH=C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe
     CHROME_CDP_PORT=9222
 """
 
 import os
 import subprocess
+import sys
 import time
 import urllib.request
 from pathlib import Path
 
 WORK_DIR = Path.home() / "music_pipeline"
 PROFILE_DIR = WORK_DIR / "chrome_profile"
-DEFAULT_CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+IS_WINDOWS = sys.platform == "win32"
+
+
+def _default_chrome_candidates() -> list:
+    if IS_WINDOWS:
+        return [
+            os.path.join(os.environ.get(v, ""), r"Google\Chrome\Application\chrome.exe")
+            for v in ("PROGRAMFILES", "PROGRAMFILES(X86)", "LOCALAPPDATA")
+            if os.environ.get(v)
+        ]
+    return ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"]
 
 
 def chrome_path() -> str:
-    return os.getenv("CHROME_PATH", DEFAULT_CHROME)
+    if os.getenv("CHROME_PATH"):
+        return os.getenv("CHROME_PATH")
+    candidates = _default_chrome_candidates()
+    for path in candidates:
+        if os.path.exists(path):
+            return path
+    return candidates[0]
 
 
 def cdp_port() -> int:
@@ -72,6 +89,22 @@ def launch_chrome(urls=(), debug: bool = True) -> subprocess.Popen:
         else:
             raise RuntimeError(f"Chrome 원격 디버깅 포트({cdp_port()}) 연결 실패")
     return proc
+
+
+def close_chrome(proc: subprocess.Popen, timeout: int = 15):
+    """Chrome을 정상 종료 (로그인 쿠키가 디스크에 저장되도록)."""
+    if proc.poll() is not None:
+        return
+    if IS_WINDOWS:
+        # /F 없이 → 창 닫기 신호(정상 종료). 이 Chrome 인스턴스만 대상
+        subprocess.run(["taskkill", "/PID", str(proc.pid), "/T"],
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    else:
+        proc.terminate()
+    try:
+        proc.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        proc.kill()
 
 
 def connect(playwright):

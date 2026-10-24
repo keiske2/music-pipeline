@@ -189,8 +189,7 @@ JSON 형식:
 
         # 결과 저장
         (job_dir / "gpt_result.json").write_text(
-            json.dumps(result, ensure_ascii=False, indent=2)
-        )
+            json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
         logger.info(f"Step 1 완료: {result.get('title', 'N/A')}")
         return result
 
@@ -681,8 +680,7 @@ def run_pipeline(payload: dict):
     job_dir.mkdir(parents=True, exist_ok=True)
 
     (job_dir / "payload.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2)
-    )
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     gpt_result = {}
     youtube_url = ""
