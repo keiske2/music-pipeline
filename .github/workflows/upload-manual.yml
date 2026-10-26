@@ -1,0 +1,60 @@
+name: 유튜브 업로드 (수동)
+
+# GitHub → Actions → "유튜브 업로드 (수동)" → Run workflow → 입력창에 곡 이름 입력
+on:
+  workflow_dispatch:
+    inputs:
+      song:
+        description: "드라이브 Suno 폴더의 곡 파일 이름 일부 (예: Una_mas_version_1)"
+        required: true
+      meta:
+        description: "메타 JSON 경로 (비우면 파일 이름으로 제목·해시태그 자동 생성)"
+        required: false
+        default: ""
+      privacy:
+        description: "공개 범위 (API 심사 전에는 private으로 잠김)"
+        type: choice
+        options: [private, unlisted, public]
+        default: private
+
+permissions:
+  contents: write
+
+concurrency:
+  group: youtube-upload
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 패키지 설치
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q requests numpy
+      - name: 영상 만들고 업로드
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          SONG: ${{ inputs.song }}
+          META: ${{ inputs.meta }}
+          PRIVACY: ${{ inputs.privacy }}
+        run: |
+          if [ -n "$META" ]; then
+            python publish_one.py "$SONG" "$META" --privacy "$PRIVACY"
+          else
+            python publish_one.py "$SONG" --privacy "$PRIVACY"
+          fi
+      - name: 업로드 기록 저장
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add uploaded.json
+          git diff --cached --quiet || git commit -m "업로드 기록: ${{ inputs.song }}"
+          git pull --rebase -q && git push -q

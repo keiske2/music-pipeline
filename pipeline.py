@@ -7,8 +7,9 @@ Playwright로 GPT Plus, Suno, Gemini, YouTube를 브라우저 자동화.
 각 단계:
   1. ChatGPT → 가사 + 해시태그 + 이미지 프롬프트 생성
   2. Suno → 음악 생성 + MP3 다운로드
-  3. ChatGPT DALL-E → 대표 이미지 생성 + 다운로드
-  4. Gemini → 이미지로 8초 영상 생성 + 다운로드
+  3. ChatGPT DALL-E → 대표 이미지 생성 + 다운로드   (VIDEO_MODE=gemini 일 때만)
+  4. Gemini → 이미지로 8초 영상 생성 + 다운로드      (VIDEO_MODE=gemini 일 때만)
+     또는 techno_visual → 테크노 루프 영상 로컬 생성 (VIDEO_MODE=techno, 기본값)
   5. FFmpeg → 음악 + 영상 합성
   6. YouTube Studio → 자동 업로드
   7. Telegram → 완료 알림
@@ -25,6 +26,10 @@ from pathlib import Path
 from datetime import datetime
 from playwright.sync_api import sync_playwright, Page, BrowserContext
 
+import browser_profile
+import techno_visual
+from latin_styles import record_used
+
 logger = logging.getLogger("pipeline")
 
 WORK_DIR = Path.home() / "music_pipeline"
@@ -36,8 +41,16 @@ OUTPUT_DIR = WORK_DIR / "outputs"
 # 유틸리티
 # ═══════════════════════════════════════════════════════════════
 
+def use_real_chrome() -> bool:
+    """BROWSER_MODE=chrome(기본): login_all.py로 로그인한 실제 Chrome 프로필 사용."""
+    return os.getenv("BROWSER_MODE", "chrome") == "chrome"
+
+
 def create_context(playwright, session_file: str) -> BrowserContext:
-    """저장된 세션으로 브라우저 컨텍스트 생성."""
+    """브라우저 컨텍스트 생성 (실제 Chrome 연결 또는 저장된 세션)."""
+    if use_real_chrome():
+        return browser_profile.connect(playwright)
+
     session_path = SESSION_DIR / session_file
     browser = playwright.chromium.launch(headless=True)
 
@@ -54,6 +67,14 @@ def create_context(playwright, session_file: str) -> BrowserContext:
         )
 
     return context
+
+
+def release_context(context: BrowserContext, page: Page):
+    """작업 탭 정리. 실제 Chrome은 로그인 유지를 위해 끄지 않고 탭만 닫는다."""
+    if use_real_chrome():
+        page.close()
+    else:
+        context.browser.close()
 
 
 def wait_and_click(page: Page, selector: str, timeout: int = 15000):
@@ -107,7 +128,7 @@ def step1_chatgpt_generate(playwright, payload: dict, job_dir: Path) -> dict:
 - 언어: {details.get('language', 'korean')}
 - 악기: {details.get('instruments', '')}
 - Weirdness: {suno.get('weirdness', 23)}%
-
+{payload.get('prompt_extra', '')}
 JSON 형식:
 {{
   "lyrics": "순수 가사만 (메타태그 제외, 줄바꿈으로 구분)",
@@ -168,13 +189,12 @@ JSON 형식:
 
         # 결과 저장
         (job_dir / "gpt_result.json").write_text(
-            json.dumps(result, ensure_ascii=False, indent=2)
-        )
+            json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
         logger.info(f"Step 1 완료: {result.get('title', 'N/A')}")
         return result
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -274,7 +294,7 @@ def step2_suno_generate(playwright, payload: dict, gpt_result: dict, job_dir: Pa
         return music_path
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -334,7 +354,7 @@ def step3_generate_image(playwright, gpt_result: dict, job_dir: Path) -> Path:
         return image_path
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -424,7 +444,29 @@ def step4_gemini_video(playwright, gpt_result: dict, image_path: Path, job_dir: 
         return video_path
 
     finally:
-        context.close()
+        release_context(context, page)
+
+
+# ═══════════════════════════════════════════════════════════════
+# Step 4 (techno): 테크노 루프 영상 로컬 생성 + 합성
+# ═══════════════════════════════════════════════════════════════
+
+def step4_techno_video(payload: dict, music_path: Path, job_dir: Path):
+    """네온 루프 영상을 만들고 음악 반응형 파형과 합성. (final, cover) 경로 반환."""
+    logger.info("Step 4: 테크노 루프 영상 생성 중...")
+    video = payload.get("video", {})
+    pattern = video.get("pattern", "grid")
+    palette = video.get("palette", [[255, 40, 180], [0, 230, 255]])
+    bpm = float(video.get("bpm") or payload.get("details", {}).get("tempo_bpm") or 128)
+
+    loop_path = techno_visual.render_loop(job_dir / "loop.mp4", pattern, palette, bpm)
+    logger.info(f"  루프 영상 완료 ({pattern}, {bpm:.0f} BPM)")
+
+    logger.info("Step 5: 음악 + 루프 영상 합성 중...")
+    final_path = techno_visual.compose_final(loop_path, music_path, job_dir / "final.mp4", palette)
+    cover_path = techno_visual.extract_cover(final_path, job_dir / "cover_image.png", at_sec=3.0)
+    logger.info(f"Step 5 완료: {final_path}")
+    return final_path, cover_path
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -577,7 +619,7 @@ def step6_youtube_upload(
         return video_url
 
     finally:
-        context.close()
+        release_context(context, page)
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -638,8 +680,7 @@ def run_pipeline(payload: dict):
     job_dir.mkdir(parents=True, exist_ok=True)
 
     (job_dir / "payload.json").write_text(
-        json.dumps(payload, ensure_ascii=False, indent=2)
-    )
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     gpt_result = {}
     youtube_url = ""
@@ -653,19 +694,28 @@ def run_pipeline(payload: dict):
             # Step 2: Suno 음악 생성
             music_path = step2_suno_generate(playwright, payload, gpt_result, job_dir)
 
-            # Step 3: DALL-E 이미지 생성
-            image_path = step3_generate_image(playwright, gpt_result, job_dir)
+            video_mode = payload.get("video", {}).get("mode") or os.getenv("VIDEO_MODE", "techno")
+            if video_mode == "techno":
+                # Step 4~5: 테크노 루프 영상 생성 + 합성 (외부 서비스 불필요)
+                final_path, image_path = step4_techno_video(payload, music_path, job_dir)
+            else:
+                # Step 3: DALL-E 이미지 생성
+                image_path = step3_generate_image(playwright, gpt_result, job_dir)
 
-            # Step 4: Gemini 영상 생성
-            video_path = step4_gemini_video(playwright, gpt_result, image_path, job_dir)
+                # Step 4: Gemini 영상 생성
+                video_path = step4_gemini_video(playwright, gpt_result, image_path, job_dir)
 
-            # Step 5: FFmpeg 합성
-            final_path = step5_ffmpeg_merge(music_path, video_path, job_dir)
+                # Step 5: FFmpeg 합성
+                final_path = step5_ffmpeg_merge(music_path, video_path, job_dir)
 
             # Step 6: YouTube 업로드
             youtube_url = step6_youtube_upload(
                 playwright, gpt_result, final_path, image_path, job_dir
             )
+
+            # 스타일 로테이션 기록 (업로드 성공한 조합만)
+            if payload.get("rotation"):
+                record_used(payload["rotation"])
 
             # Step 7: Telegram 알림
             step7_telegram_notify(job_id, gpt_result, youtube_url, image_path)

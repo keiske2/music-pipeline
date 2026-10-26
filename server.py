@@ -24,6 +24,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 
 from pipeline import run_pipeline, WORK_DIR, OUTPUT_DIR
+from latin_styles import next_payload
 
 # ── 설정 ──────────────────────────────────────────────────────
 load_dotenv(WORK_DIR / ".env")
@@ -38,7 +39,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler(LOG_DIR / "server.log"),
+        logging.FileHandler(LOG_DIR / "server.log", encoding="utf-8"),
         logging.StreamHandler(sys.stdout),
     ],
 )
@@ -81,7 +82,7 @@ def api_queue_add():
     # 큐에 저장
     queue_id = datetime.now().strftime("%Y%m%d_%H%M%S")
     queue_file = QUEUE_DIR / f"{queue_id}.json"
-    queue_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2))
+    queue_file.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     logger.info(f"큐 추가: '{payload['core']['keyword']}' → {queue_file.name}")
     return jsonify({
@@ -96,7 +97,7 @@ def api_queue_list():
     """큐 목록 조회."""
     items = []
     for f in sorted(QUEUE_DIR.glob("*.json")):
-        data = json.loads(f.read_text())
+        data = json.loads(f.read_text(encoding="utf-8"))
         items.append({
             "queue_id": f.stem,
             "keyword": data.get("core", {}).get("keyword", ""),
@@ -115,6 +116,21 @@ def api_queue_delete(queue_id):
     return jsonify({"error": "not found"}), 404
 
 
+@app.route("/api/latin/preview", methods=["GET"])
+def api_latin_preview():
+    """다음에 자동 생성될 라틴 댄스 곡 설정 미리보기 (기록 안 함)."""
+    return jsonify(next_payload())
+
+
+@app.route("/api/latin/run", methods=["POST"])
+def api_latin_run():
+    """오늘의 라틴 댄스 곡을 자동 설정으로 즉시 생성·업로드."""
+    payload = next_payload()
+    Thread(target=run_pipeline, args=(payload,), daemon=True).start()
+    logger.info(f"라틴 자동 실행: {payload['rotation']}")
+    return jsonify({"status": "started", "rotation": payload["rotation"]}), 202
+
+
 @app.route("/api/status", methods=["GET"])
 def api_status():
     """최근 작업 상태 확인."""
@@ -130,10 +146,10 @@ def api_status():
 
         info["completed"] = final.exists()
         if payload_file.exists():
-            p = json.loads(payload_file.read_text())
+            p = json.loads(payload_file.read_text(encoding="utf-8"))
             info["keyword"] = p.get("core", {}).get("keyword", "")
         if gpt_file.exists():
-            g = json.loads(gpt_file.read_text())
+            g = json.loads(gpt_file.read_text(encoding="utf-8"))
             info["title"] = g.get("title", "")
         recent.append(info)
     return jsonify({"jobs": recent})
@@ -159,11 +175,14 @@ def serve_ui():
 
 def scheduler_loop():
     """큐에 있는 작업을 정해진 시간에 실행."""
-    schedule_1 = os.getenv("SCHEDULE_TIME_1", "10:00")
-    schedule_2 = os.getenv("SCHEDULE_TIME_2", "16:00")
+    # SCHEDULE_TIME_2를 비워두면 하루 1회만 실행
+    schedules = [t for t in (os.getenv("SCHEDULE_TIME_1", "10:00"),
+                             os.getenv("SCHEDULE_TIME_2", "")) if t.strip()]
+    # 큐가 비어 있으면 라틴 댄스 곡을 자동 설정으로 생성
+    auto_latin = os.getenv("AUTO_LATIN_DAILY", "1") == "1"
     executed_today = set()
 
-    logger.info(f"스케줄러 시작: {schedule_1}, {schedule_2}")
+    logger.info(f"스케줄러 시작: {', '.join(schedules)} (라틴 자동생성: {auto_latin})")
 
     while True:
         now = datetime.now()
@@ -174,7 +193,7 @@ def scheduler_loop():
         if any(d[:8] != today for d in executed_today) if executed_today else False:
             executed_today.clear()
 
-        for schedule_time in [schedule_1, schedule_2]:
+        for schedule_time in schedules:
             schedule_key = f"{today}_{schedule_time}"
 
             if current_time == schedule_time and schedule_key not in executed_today:
@@ -182,7 +201,7 @@ def scheduler_loop():
                 queue_files = sorted(QUEUE_DIR.glob("*.json"))
                 if queue_files:
                     queue_file = queue_files[0]
-                    payload = json.loads(queue_file.read_text())
+                    payload = json.loads(queue_file.read_text(encoding="utf-8"))
                     queue_file.unlink()  # 큐에서 제거
 
                     logger.info(f"스케줄 실행 ({schedule_time}): "
@@ -192,6 +211,11 @@ def scheduler_loop():
                         target=run_pipeline, args=(payload,), daemon=True
                     )
                     thread.start()
+                elif auto_latin:
+                    payload = next_payload()
+                    logger.info(f"스케줄 실행 ({schedule_time}): 라틴 자동 생성 "
+                                f"{payload['rotation']}")
+                    Thread(target=run_pipeline, args=(payload,), daemon=True).start()
                 else:
                     logger.info(f"스케줄 시간 ({schedule_time}) 이지만 큐가 비어있음")
 
@@ -212,13 +236,13 @@ if __name__ == "__main__":
     scheduler = Thread(target=scheduler_loop, daemon=True)
     scheduler.start()
 
-    # 맥북 IP 확인
-    import subprocess as sp
+    # 내부망 IP 확인 (macOS·Windows 공통, 실제 패킷은 보내지 않음)
+    import socket
     try:
-        ip = sp.check_output(
-            ["ipconfig", "getifaddr", "en0"], text=True
-        ).strip()
-    except:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.connect(("8.8.8.8", 80))
+            ip = sock.getsockname()[0]
+    except OSError:
         ip = "localhost"
 
     logger.info(f"서버 주소: http://{ip}:8080")

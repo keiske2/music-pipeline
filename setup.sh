@@ -39,6 +39,13 @@ else
     echo "✅ FFmpeg: $(ffmpeg -version 2>&1 | head -1)"
 fi
 
+# ── 3-1. Google Chrome 확인 (Google 계정 로그인용) ────────────
+if [ ! -d "/Applications/Google Chrome.app" ]; then
+    echo "⚠️  Google Chrome이 없습니다. 설치하세요: brew install --cask google-chrome"
+else
+    echo "✅ Google Chrome 설치됨"
+fi
+
 # ── 4. 작업 디렉토리 생성 ─────────────────────────────────────
 WORK="$HOME/music_pipeline"
 mkdir -p "$WORK"/{outputs,logs,queue,sessions}
@@ -60,7 +67,8 @@ pip install -q \
     flask-cors \
     requests \
     python-dotenv \
-    Pillow
+    Pillow \
+    numpy
 
 # ── 7. Playwright 브라우저 설치 ───────────────────────────────
 echo "📦 Playwright Chromium 설치 중..."
@@ -77,9 +85,21 @@ if [ ! -f "$WORK/.env" ]; then
 TELEGRAM_BOT_TOKEN=
 TELEGRAM_CHAT_ID=
 
-# 스케줄 시간 (24시간 형식)
+# 스케줄 시간 (24시간 형식) — 2번을 비우면 하루 1회
 SCHEDULE_TIME_1=10:00
-SCHEDULE_TIME_2=16:00
+SCHEDULE_TIME_2=
+
+# 큐가 비어 있으면 매일 다른 라틴 댄스 곡 자동 생성 (1=켜기, 0=끄기)
+AUTO_LATIN_DAILY=1
+
+# 영상 방식: techno(로컬 네온 루프, 기본) / gemini(DALL-E 이미지 + Gemini 영상)
+VIDEO_MODE=techno
+
+# 브라우저: chrome(기본, login_all.py로 로그인한 실제 Chrome 프로필) / legacy(예전 세션 파일 방식)
+# Suno를 Google 계정으로 로그인한다면 chrome 모드를 쓰세요.
+BROWSER_MODE=chrome
+# CHROME_PATH=/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+# CHROME_CDP_PORT=9222
 ENVEOF
     echo "⚠️  $WORK/.env 파일 생성됨 — Telegram 설정을 입력하세요"
 fi
