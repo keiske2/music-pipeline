@@ -1,0 +1,44 @@
+name: 유튜브 자동 업로드 (하루 3번)
+
+# 드라이브 Suno 폴더에서 아직 안 올린 곡 중 가장 오래된 1곡을 영상으로 만들어 업로드.
+# 새 곡이 없으면 아무것도 하지 않음.
+on:
+  schedule:
+    - cron: "17 0 * * *"    # 한국시간 09:17
+    - cron: "17 6 * * *"    # 한국시간 15:17
+    - cron: "17 12 * * *"   # 한국시간 21:17
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: youtube-upload
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 패키지 설치
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q requests numpy
+      - name: 새 곡 1개 업로드
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python publish_auto.py --privacy private
+      - name: 업로드 기록 저장
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add uploaded.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "자동 업로드 기록"
+          git pull --rebase -q && git push -q
