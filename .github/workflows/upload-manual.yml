@@ -12,10 +12,10 @@ on:
         required: false
         default: ""
       privacy:
-        description: "공개 범위 (API 심사 전에는 private으로 잠김)"
+        description: "공개 범위"
         type: choice
-        options: [private, unlisted, public]
-        default: private
+        options: [public, unlisted, private]
+        default: public
 
 permissions:
   contents: write

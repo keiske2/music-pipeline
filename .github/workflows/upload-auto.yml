@@ -32,7 +32,7 @@ jobs:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
-        run: python publish_auto.py --privacy private
+        run: python publish_auto.py --privacy public
       - name: 업로드 기록 저장
         run: |
           git config user.name "github-actions[bot]"

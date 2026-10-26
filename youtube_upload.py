@@ -99,7 +99,11 @@ def upload(video_path: Path, meta: dict, privacy: str = "private") -> str:
                 timeout=300,
             )
             if resp.status_code in (200, 201):
-                return resp.json()["id"]
+                video = resp.json()
+                # 유튜브가 실제로 적용한 공개 범위 (미심사 API 프로젝트는 private으로 잠길 수 있음)
+                actual = video.get("status", {}).get("privacyStatus")
+                print(f"요청 공개 범위: {privacy} / 유튜브 적용 결과: {actual}")
+                return video["id"]
             if resp.status_code != 308:
                 raise RuntimeError(f"업로드 실패 ({resp.status_code}): {resp.text[:300]}")
             # 308: 서버가 받은 위치부터 이어서 전송
