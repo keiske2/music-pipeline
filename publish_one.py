@@ -84,6 +84,12 @@ def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 
 
     video_id = youtube_upload.upload(final, meta, privacy)
     url = f"https://youtu.be/{video_id}"
+    if privacy == "public":
+        # 업로드 직후 유튜브가 비공개로 잠갔으면 공개로 다시 시도
+        try:
+            print(f"공개 범위 확인: {youtube_upload.set_privacy(video_id, 'public')}")
+        except RuntimeError as e:
+            print(f"⚠️ 공개 전환 실패 (업로드는 완료): {e}")
     uploaded[song["id"]] = url
     save_uploaded(uploaded)
     print(f"업로드 완료: {meta['title']} → {url} ({privacy})")

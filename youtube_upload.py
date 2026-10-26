@@ -28,6 +28,7 @@ import requests
 
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 UPLOAD_URL = "https://www.googleapis.com/upload/youtube/v3/videos"
+VIDEOS_URL = "https://www.googleapis.com/youtube/v3/videos"
 CHUNK = 8 * 1024 * 1024
 MUSIC_CATEGORY = "10"   # YouTube 카테고리 'Music'
 
@@ -112,6 +113,36 @@ def upload(video_path: Path, meta: dict, privacy: str = "private") -> str:
             f.seek(offset)
 
     raise RuntimeError("업로드가 완료 응답 없이 끝남")
+
+
+def set_privacy(video_id: str, privacy: str = "public") -> str:
+    """이미 올린 영상의 공개 범위 변경. 토큰에 youtube 범위가 있어야 한다. 적용 결과를 반환."""
+    token = access_token()
+    headers = {"Authorization": f"Bearer {token}"}
+    got = requests.get(VIDEOS_URL, params={"part": "status", "id": video_id},
+                       headers=headers, timeout=30)
+    if got.status_code != 200:
+        raise RuntimeError(f"영상 조회 실패 ({got.status_code}): {got.text[:300]}")
+    items = got.json().get("items", [])
+    if not items:
+        raise RuntimeError(f"영상을 찾지 못함: {video_id}")
+    status = items[0]["status"]
+    if status.get("privacyStatus") == privacy:
+        return privacy
+
+    body = {"id": video_id, "status": {
+        "privacyStatus": privacy,
+        "selfDeclaredMadeForKids": status.get("selfDeclaredMadeForKids", False),
+        "embeddable": status.get("embeddable", True),
+        "license": status.get("license", "youtube"),
+        "publicStatsViewable": status.get("publicStatsViewable", True),
+    }}
+    resp = requests.put(VIDEOS_URL, params={"part": "status"},
+                        headers={**headers, "Content-Type": "application/json"},
+                        data=json.dumps(body), timeout=30)
+    if resp.status_code != 200:
+        raise RuntimeError(f"공개 범위 변경 실패 ({resp.status_code}): {resp.text[:300]}")
+    return resp.json().get("status", {}).get("privacyStatus")
 
 
 def main():

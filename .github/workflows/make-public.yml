@@ -1,0 +1,28 @@
+name: 업로드한 영상 공개로 전환
+
+# uploaded.json에 기록된 영상을 모두 public으로 바꾼다.
+# 자동 업로드(토·일) 직후에도 실행된다.
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["유튜브 자동 업로드 (토·일)", "유튜브 업로드 (수동)"]
+    types: [completed]
+
+jobs:
+  make-public:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests
+      - name: 공개로 전환
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+        run: python make_public.py
