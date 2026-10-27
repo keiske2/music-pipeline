@@ -1,0 +1,21 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    #shade-layer {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(11, 2, 23, 0.62) 0%,
+        rgba(11, 2, 23, 0.45) 45%,
+        rgba(11, 2, 23, 0.8) 100%
+      );
+    }
+  </style>
+  <div id="root" data-composition-id="shade" data-width="1080" data-height="1920" data-no-timeline>
+    <div id="shade-layer" class="clip" data-start="0" data-duration="15"></div>
+  </div>
+</template>

@@ -13,6 +13,10 @@ on:
         description: "화면에 나올 곡 제목 (대문자 권장)"
         required: true
         default: "UNA MÁS"
+      dance:
+        description: "배경 댄스 영상 (드라이브 영상 파일 이름 일부, 비우면 네온 그리드 배경)"
+        required: false
+        default: ""
       upload:
         description: "유튜브 쇼츠로 바로 업로드할까요?"
         type: choice
@@ -44,6 +48,25 @@ jobs:
         run: |
           python publish_short.py fetch "$SONG" work/song.mp3
           python shorts/pick_highlight.py work/song.mp3 shorts/una-mas/assets/music.mp3
+      - name: 댄스 영상 없음 → 숨겨진 빈 영상
+        if: ${{ inputs.dance == '' }}
+        run: |
+          ffmpeg -y -v error -f lavfi -i "color=c=black:s=1080x1920:r=30:d=15" -c:v libx264 -pix_fmt yuv420p shorts/una-mas/assets/dancer.mp4
+      - name: 댄스 영상 넣기 (선택)
+        if: ${{ inputs.dance != '' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          DANCE: ${{ inputs.dance }}
+        run: |
+          python publish_short.py fetch-video "$DANCE" work/dance_src
+          # 세로 1080×1920으로 꽉 채워 자르고, 15초보다 짧으면 반복, 소리 제거
+          ffmpeg -y -v error -stream_loop -1 -i work/dance_src -t 15 -an \
+            -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30" \
+            -c:v libx264 -pix_fmt yuv420p -crf 18 shorts/una-mas/assets/dancer.mp4
+          # 댄서 영상과 어둡게 깔리는 막을 표시
+          python3 -c "from pathlib import Path; p=Path('shorts/una-mas/index.html'); s=p.read_text(); p.write_text(s.replace('        data-hidden\n', ''))"
       - name: HyperFrames 렌더링
         working-directory: shorts/una-mas
         env:
@@ -55,8 +78,16 @@ jobs:
           cp /tmp/gsap/package/dist/gsap.min.js assets/vendor/gsap.min.js
           npx --yes hyperframes@0.8.206 telemetry disable
           npx --yes hyperframes@0.8.206 browser ensure
-          npx --yes hyperframes@0.8.206 render --quality delivery --variables-file vars.json --output renders/short.mp4
-          ffprobe -v error -show_entries format=duration -of csv=p=0 renders/short.mp4
+          npx --yes hyperframes@0.8.206 render --quality delivery --variables-file vars.json --output renders/render.mp4
+          # 소리 보장: 하이라이트 음원을 ffmpeg로 직접 다시 입힘 (페이드 인 0.3초 / 아웃 1.2초)
+          ffmpeg -y -v error -i renders/render.mp4 -i assets/music.mp3 -map 0:v -map 1:a -c:v copy \
+            -af "afade=t=in:d=0.3,afade=t=out:st=13.8:d=1.2" -c:a aac -b:a 192k -shortest renders/short.mp4
+          echo "--- 결과 확인 ---"
+          ffprobe -v error -show_entries stream=codec_type,width,height:format=duration -of compact renders/short.mp4
+          VOL=$(ffmpeg -i renders/short.mp4 -af volumedetect -vn -f null - 2>&1 | grep -E "mean_volume|max_volume")
+          echo "$VOL"
+          MEAN=$(echo "$VOL" | sed -n 's/.*mean_volume: \(-*[0-9.]*\) dB.*/\1/p')
+          python3 -c "import sys; m=float('$MEAN'); sys.exit(0 if m > -45 else 'ERROR: 소리가 거의 없음 (mean %.1f dB)' % m)"
       - name: 영상 파일 보관 (Artifacts)
         uses: actions/upload-artifact@v4
         with:

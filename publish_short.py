@@ -3,6 +3,7 @@ publish_short.py — HyperFrames 쇼츠용 음원 가져오기 + 완성 영상 �
 ======================================================================
 사용법:
     python publish_short.py fetch <곡 이름 일부> <저장 경로>
+    python publish_short.py fetch-video <영상 이름 일부> <저장 경로>
     python publish_short.py upload <영상.mp4> <곡 제목>      # 공개 쇼츠로 업로드
 """
 
@@ -20,6 +21,12 @@ def fetch(name: str, dest: Path):
         raise RuntimeError(f"드라이브 Suno 폴더에서 '{name}' 곡을 찾지 못함")
     print(f"곡: {songs[0]['folder']}/{songs[0]['name']}")
     drive_fetch.download(songs[0]["id"], dest)
+
+
+def fetch_video(name: str, dest: Path):
+    f = drive_fetch.find_video(name)
+    print(f"댄스 영상: {f['name']}")
+    drive_fetch.download(f["id"], dest)
 
 
 def upload(video: Path, title: str):
@@ -42,6 +49,8 @@ if __name__ == "__main__":
     try:
         if len(sys.argv) == 4 and sys.argv[1] == "fetch":
             fetch(sys.argv[2], Path(sys.argv[3]))
+        elif len(sys.argv) == 4 and sys.argv[1] == "fetch-video":
+            fetch_video(sys.argv[2], Path(sys.argv[3]))
         elif len(sys.argv) == 4 and sys.argv[1] == "upload":
             upload(Path(sys.argv[2]), sys.argv[3])
         else:

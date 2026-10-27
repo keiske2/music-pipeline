@@ -54,6 +54,16 @@ def list_songs(root_name: str = "Suno") -> list:
     return sorted(songs, key=lambda s: s["createdTime"], reverse=True)
 
 
+def find_video(name: str) -> dict:
+    """드라이브 전체에서 이름에 name이 들어간 영상 파일 1개 (최신순)."""
+    token = access_token()
+    safe = name.replace("'", "\\'")
+    files = _query(token, f"name contains '{safe}' and mimeType contains 'video/' and trashed = false")
+    if not files:
+        raise RuntimeError(f"드라이브에서 '{name}' 영상 파일을 찾지 못함")
+    return files[0]
+
+
 def download(file_id: str, dest: Path) -> Path:
     token = access_token()
     with requests.get(f"{API}/{file_id}", params={"alt": "media"},
