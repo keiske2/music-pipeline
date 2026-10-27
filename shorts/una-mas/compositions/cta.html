@@ -1,0 +1,77 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    #c-wrap {
+      position: absolute;
+      inset: 0;
+    }
+    #c-box {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      top: 500px;
+      text-align: center;
+    }
+    #c-1 {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 140px;
+      line-height: 1;
+      color: #ffffff;
+      text-shadow:
+        0 0 14px #00e5ff,
+        0 0 44px #00e5ff;
+    }
+    #c-pill {
+      display: inline-block;
+      margin-top: 60px;
+      padding: 26px 56px;
+      border: 6px solid #ff2bd6;
+      border-radius: 80px;
+      font-family: "Oswald", sans-serif;
+      font-size: 64px;
+      letter-spacing: 0.06em;
+      color: #ffffff;
+      background: rgba(11, 2, 23, 0.75);
+      box-shadow:
+        0 0 30px rgba(255, 43, 214, 0.9),
+        inset 0 0 24px rgba(255, 43, 214, 0.5);
+    }
+    #c-tags {
+      margin-top: 70px;
+      font-family: "Oswald", sans-serif;
+      font-size: 48px;
+      letter-spacing: 0.04em;
+      color: #ffe14d;
+      text-shadow: 0 0 14px rgba(255, 138, 0, 0.8);
+    }
+  </style>
+  <div id="root" data-composition-id="cta" data-width="1080" data-height="1920">
+    <div id="c-wrap" class="clip" data-start="0" data-duration="3.4">
+      <div id="c-box">
+        <div id="c-1">FULL SONG</div>
+        <div id="c-pill">▶ ON THE CHANNEL</div>
+        <div id="c-tags">#LatinDance #Zumba</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#c-1", { y: -90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "expo.out" }, 0);
+    tl.fromTo(
+      "#c-pill",
+      { scale: 0.4, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" },
+      0.35,
+    );
+    tl.fromTo("#c-tags", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "expo.out" }, 0.7);
+    // 끝까지 유지하며 버튼만 살짝 맥박
+    tl.fromTo("#c-pill", { scale: 1 }, { scale: 1.05, duration: 0.5, ease: "sine.inOut", immediateRender: false }, 1.2);
+    tl.fromTo("#c-pill", { scale: 1.05 }, { scale: 1, duration: 0.5, ease: "sine.inOut", immediateRender: false }, 1.7);
+    tl.fromTo("#c-pill", { scale: 1 }, { scale: 1.05, duration: 0.5, ease: "sine.inOut", immediateRender: false }, 2.2);
+    tl.fromTo("#c-pill", { scale: 1.05 }, { scale: 1, duration: 0.5, ease: "sine.inOut", immediateRender: false }, 2.7);
+    window.__timelines["cta"] = tl;
+  </script>
+</template>

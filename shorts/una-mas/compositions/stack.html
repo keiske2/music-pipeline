@@ -1,0 +1,75 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    #s-wrap {
+      position: absolute;
+      inset: 0;
+    }
+    #s-lines {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      top: 430px;
+      text-align: center;
+      font-family: "Archivo Black", sans-serif;
+      color: #ffffff;
+    }
+    #s-1 {
+      font-size: 96px;
+      opacity: 0.6;
+      text-shadow: 0 0 24px #00e5ff;
+    }
+    #s-2 {
+      margin-top: 30px;
+      font-size: 128px;
+      opacity: 0.8;
+      text-shadow: 0 0 30px #00e5ff;
+    }
+    #s-3 {
+      margin-top: 36px;
+      font-size: 168px;
+      color: #ffffff;
+      text-shadow:
+        0 0 16px #ff2bd6,
+        0 0 50px #ff2bd6,
+        0 0 120px rgba(255, 43, 214, 0.85);
+    }
+    #s-flash {
+      position: absolute;
+      inset: 0;
+      background: #ff2bd6;
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="stack" data-width="1080" data-height="1920">
+    <div id="s-wrap" class="clip" data-start="0" data-duration="4">
+      <div id="s-flash"></div>
+      <div id="s-lines">
+        <div id="s-1" data-var-text="title">UNA MÁS</div>
+        <div id="s-2" data-var-text="title">UNA MÁS</div>
+        <div id="s-3" data-var-text="shout">¡UNA MÁS!</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#s-1", { y: 80, opacity: 0 }, { y: 0, opacity: 0.6, duration: 0.3, ease: "expo.out" }, 0);
+    tl.fromTo("#s-2", { y: 80, opacity: 0 }, { y: 0, opacity: 0.8, duration: 0.3, ease: "expo.out" }, 0.6);
+    // 마지막 줄은 분홍 플래시와 함께 꽂힘
+    tl.fromTo("#s-flash", { opacity: 0 }, { opacity: 0.45, duration: 0.06 }, 1.2);
+    tl.fromTo("#s-flash", { opacity: 0.45 }, { opacity: 0, duration: 0.4, ease: "power2.out", immediateRender: false }, 1.26);
+    tl.fromTo(
+      "#s-3",
+      { scale: 1.8, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.26, ease: "back.out(1.6)" },
+      1.2,
+    );
+    // 유지하는 동안 천천히 다가옴
+    tl.fromTo("#s-lines", { scale: 1 }, { scale: 1.07, duration: 2.4, ease: "none" }, 1.46);
+    tl.fromTo("#s-lines", { opacity: 1 }, { opacity: 0, duration: 0.18, ease: "power2.in", immediateRender: false }, 3.78);
+    window.__timelines["stack"] = tl;
+  </script>
+</template>

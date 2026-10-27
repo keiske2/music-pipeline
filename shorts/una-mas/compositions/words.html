@@ -1,0 +1,82 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    .w-slot {
+      position: absolute;
+      inset: 0;
+    }
+    .w-word {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      top: 560px;
+      text-align: center;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 200px;
+      line-height: 1.02;
+      color: #ffffff;
+    }
+    .w-pink {
+      text-shadow:
+        0 0 14px #ff2bd6,
+        0 0 44px #ff2bd6,
+        0 0 100px rgba(255, 43, 214, 0.8);
+    }
+    .w-cyan {
+      text-shadow:
+        0 0 14px #00e5ff,
+        0 0 44px #00e5ff,
+        0 0 100px rgba(0, 229, 255, 0.8);
+    }
+    .w-yellow {
+      color: #ffe14d;
+      text-shadow:
+        0 0 14px #ff8a00,
+        0 0 44px rgba(255, 138, 0, 0.9);
+    }
+  </style>
+  <div id="root" data-composition-id="words" data-width="1080" data-height="1920">
+    <div id="w1" class="w-slot clip" data-start="0" data-duration="1.1">
+      <div id="w1-t" class="w-word w-pink">BAILA</div>
+    </div>
+    <div id="w2" class="w-slot clip" data-start="1.1" data-duration="1.1">
+      <div id="w2-t" class="w-word w-cyan">SUDA</div>
+    </div>
+    <div id="w3" class="w-slot clip" data-start="2.2" data-duration="1.1">
+      <div id="w3-t" class="w-word w-pink">SONRÍE</div>
+    </div>
+    <div id="w4" class="w-slot clip" data-start="3.3" data-duration="1.3">
+      <div id="w4-t" class="w-word w-yellow">¡OTRA<br />VEZ!</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // 단어마다 다른 방향으로 꽂히고, 칸이 끝나기 직전 빠짐
+    const slots = [
+      { id: "#w1-t", at: 0, end: 1.1, from: { y: -220 } },
+      { id: "#w2-t", at: 1.1, end: 2.2, from: { x: -420 } },
+      { id: "#w3-t", at: 2.2, end: 3.3, from: { x: 420 } },
+      { id: "#w4-t", at: 3.3, end: 4.6, from: { scale: 0.35 } },
+    ];
+    slots.forEach((s) => {
+      const to = { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.24, ease: "back.out(1.8)" };
+      tl.fromTo(s.id, { x: 0, y: 0, scale: 1, opacity: 0, ...s.from }, to, s.at);
+      tl.fromTo(
+        s.id,
+        { scale: 1 },
+        { scale: 1.06, duration: s.end - s.at - 0.4, ease: "none", immediateRender: false },
+        s.at + 0.24,
+      );
+      tl.fromTo(
+        s.id,
+        { opacity: 1 },
+        { opacity: 0, duration: 0.12, ease: "power2.in", immediateRender: false },
+        s.end - 0.16,
+      );
+    });
+    window.__timelines["words"] = tl;
+  </script>
+</template>

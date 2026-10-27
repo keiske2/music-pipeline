@@ -1,0 +1,74 @@
+name: 쇼츠 만들기 (HyperFrames)
+
+# 드라이브 곡에서 가장 신나는 15초를 잘라 네온 세로 쇼츠(1080×1920)로 렌더링.
+# 결과 MP4는 실행 화면 아래 Artifacts에서 내려받을 수 있고, upload=yes면 유튜브 쇼츠로 공개 업로드.
+on:
+  workflow_dispatch:
+    inputs:
+      song:
+        description: "드라이브 Suno 폴더의 곡 파일 이름 일부"
+        required: true
+        default: "Una_mas_version_1"
+      title:
+        description: "화면에 나올 곡 제목 (대문자 권장)"
+        required: true
+        default: "UNA MÁS"
+      upload:
+        description: "유튜브 쇼츠로 바로 업로드할까요?"
+        type: choice
+        options: ["no", "yes"]
+        default: "no"
+
+jobs:
+  short:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: 패키지 설치
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q requests numpy
+      - name: 곡 가져와서 하이라이트 15초 자르기
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          SONG: ${{ inputs.song }}
+        run: |
+          python publish_short.py fetch "$SONG" work/song.mp3
+          python shorts/pick_highlight.py work/song.mp3 shorts/una-mas/assets/music.mp3
+      - name: HyperFrames 렌더링
+        working-directory: shorts/una-mas
+        env:
+          TITLE: ${{ inputs.title }}
+        run: |
+          python3 -c "import json,os; t=os.environ['TITLE']; json.dump({'title': t, 'shout': '¡' + t + '!'}, open('vars.json','w'), ensure_ascii=False)"
+          # GSAP은 저장소에 넣지 않고 렌더링 때 npm에서 받아 씀 (index.html이 assets/vendor/gsap.min.js를 읽음)
+          mkdir -p assets/vendor /tmp/gsap && (cd /tmp/gsap && npm pack gsap@3.14.2 --silent && tar -xzf gsap-3.14.2.tgz)
+          cp /tmp/gsap/package/dist/gsap.min.js assets/vendor/gsap.min.js
+          npx --yes hyperframes@0.8.206 telemetry disable
+          npx --yes hyperframes@0.8.206 browser ensure
+          npx --yes hyperframes@0.8.206 render --quality delivery --variables-file vars.json --output renders/short.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 renders/short.mp4
+      - name: 영상 파일 보관 (Artifacts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: short-${{ inputs.song }}
+          path: shorts/una-mas/renders/short.mp4
+      - name: 유튜브 쇼츠 업로드
+        if: ${{ inputs.upload == 'yes' }}
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          TITLE: ${{ inputs.title }}
+        run: |
+          NAME=$(python3 -c "import os; print(os.environ['TITLE'].title())")
+          python publish_short.py upload shorts/una-mas/renders/short.mp4 "$NAME"

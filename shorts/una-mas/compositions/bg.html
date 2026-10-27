@@ -1,0 +1,100 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: radial-gradient(120% 70% at 50% 34%, #2a0a4a 0%, #0b0217 62%);
+    }
+    #bg-sky {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 1180px;
+    }
+    #bg-ring {
+      position: absolute;
+      left: 290px;
+      top: 330px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      border: 10px solid #ff2bd6;
+      box-shadow:
+        0 0 40px #ff2bd6,
+        0 0 120px rgba(255, 43, 214, 0.55),
+        inset 0 0 60px rgba(255, 43, 214, 0.45);
+      opacity: 0.55;
+    }
+    #bg-horizon {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 1176px;
+      height: 6px;
+      background: #00e5ff;
+      box-shadow:
+        0 0 30px #00e5ff,
+        0 0 90px rgba(0, 229, 255, 0.6);
+    }
+    #bg-floor {
+      position: absolute;
+      left: -540px;
+      right: -540px;
+      top: 1180px;
+      height: 1400px;
+      transform-origin: 50% 0%;
+      transform: perspective(520px) rotateX(64deg);
+    }
+    #bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255, 43, 214, 0.85) 3px, transparent 3px),
+        linear-gradient(to bottom, rgba(0, 229, 255, 0.85) 3px, transparent 3px);
+      background-size: 120px 120px;
+      background-position: 0px 0px;
+    }
+    #bg-scan {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.22) 0px,
+        rgba(0, 0, 0, 0.22) 2px,
+        transparent 2px,
+        transparent 6px
+      );
+    }
+  </style>
+  <div id="root" data-composition-id="bg" data-width="1080" data-height="1920">
+    <div id="bg-sky" class="clip" data-start="0" data-duration="15">
+      <div id="bg-ring"></div>
+    </div>
+    <div id="bg-floor" class="clip" data-start="0" data-duration="15" data-layout-allow-overflow>
+      <div id="bg-grid" data-layout-allow-overflow></div>
+    </div>
+    <div id="bg-horizon" class="clip" data-start="0" data-duration="15"></div>
+    <div id="bg-scan" class="clip" data-start="0" data-duration="15"></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // 그리드가 계속 앞으로 흐름: 15초 동안 정확히 12칸
+    tl.fromTo(
+      "#bg-grid",
+      { backgroundPosition: "0px 0px" },
+      { backgroundPosition: "0px 1440px", duration: 15, ease: "none" },
+      0,
+    );
+    // 링이 1.5초마다 천천히 숨쉬듯 커졌다 작아짐
+    // 0.75초 × 20회 왕복 = 15초 (무한 반복 대신 횟수 지정)
+    tl.fromTo(
+      "#bg-ring",
+      { scale: 1, opacity: 0.5 },
+      { scale: 1.06, opacity: 0.75, duration: 0.75, ease: "sine.inOut", repeat: 19, yoyo: true },
+      0,
+    );
+    window.__timelines["bg"] = tl;
+  </script>
+</template>

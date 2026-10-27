@@ -1,0 +1,68 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    #hook-wrap {
+      position: absolute;
+      inset: 0;
+    }
+    #hook-inner {
+      position: absolute;
+      left: 54px;
+      right: 54px;
+      top: 470px;
+      text-align: center;
+    }
+    #hook-title {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 170px;
+      line-height: 1;
+      color: #ffffff;
+      letter-spacing: 0.01em;
+      text-shadow:
+        0 0 12px #ff2bd6,
+        0 0 36px #ff2bd6,
+        0 0 90px rgba(255, 43, 214, 0.8);
+    }
+    #hook-sub {
+      margin-top: 44px;
+      font-family: "Oswald", sans-serif;
+      font-size: 64px;
+      letter-spacing: 0.12em;
+      color: #00e5ff;
+      text-shadow: 0 0 18px rgba(0, 229, 255, 0.9);
+    }
+  </style>
+  <div id="root" data-composition-id="hook" data-width="1080" data-height="1920">
+    <div id="hook-wrap" class="clip" data-start="0" data-duration="3">
+      <div id="hook-inner">
+        <h1 id="hook-title" data-var-text="title">UNA MÁS</h1>
+        <p id="hook-sub" data-var-text="subtitle">LATIN DANCE WORKOUT</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    // 0프레임부터 제목이 보임. 네온 깜빡임 두 번
+    tl.fromTo("#hook-title", { opacity: 1 }, { opacity: 0.55, duration: 0.05 }, 0.18);
+    tl.fromTo("#hook-title", { opacity: 0.55 }, { opacity: 1, duration: 0.05, immediateRender: false }, 0.26);
+    tl.fromTo("#hook-title", { opacity: 1 }, { opacity: 0.6, duration: 0.04, immediateRender: false }, 0.42);
+    tl.fromTo("#hook-title", { opacity: 0.6 }, { opacity: 1, duration: 0.06, immediateRender: false }, 0.48);
+    tl.fromTo(
+      "#hook-sub",
+      { y: 60, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.35, ease: "expo.out" },
+      0.3,
+    );
+    // 퇴장: 확대되며 사라짐, 3.0초 직전에 끝
+    tl.fromTo(
+      "#hook-inner",
+      { scale: 1, opacity: 1 },
+      { scale: 1.35, opacity: 0, duration: 0.35, ease: "power3.in" },
+      2.6,
+    );
+    window.__timelines["hook"] = tl;
+  </script>
+</template>
