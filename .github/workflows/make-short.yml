@@ -20,8 +20,8 @@ on:
       upload:
         description: "유튜브 쇼츠로 바로 업로드할까요?"
         type: choice
-        options: ["no", "yes"]
-        default: "no"
+        options: ["yes", "no"]
+        default: "yes"
 
 jobs:
   short:
@@ -66,7 +66,7 @@ jobs:
             -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=30" \
             -c:v libx264 -pix_fmt yuv420p -crf 18 shorts/una-mas/assets/dancer.mp4
           # 댄서 영상과 어둡게 깔리는 막을 표시
-          python3 -c "from pathlib import Path; p=Path('shorts/una-mas/index.html'); s=p.read_text(); p.write_text(s.replace('        data-hidden\n', ''))"
+          python3 -c "from pathlib import Path; p=Path('shorts/una-mas/index.html'); s=p.read_text().replace('        data-hidden\n', ''); s=s.replace('data-composition-src=\"compositions/dancer.html\"', 'data-composition-src=\"compositions/dancer.html\"\n        data-hidden'); p.write_text(s)"
       - name: HyperFrames 렌더링
         working-directory: shorts/una-mas
         env:
@@ -78,6 +78,9 @@ jobs:
           cp /tmp/gsap/package/dist/gsap.min.js assets/vendor/gsap.min.js
           npx --yes hyperframes@0.8.206 telemetry disable
           npx --yes hyperframes@0.8.206 browser ensure
+          # 곡의 박자를 찾아 네온 댄서가 박에 맞춰 춤추게 함
+          npx --yes hyperframes@0.8.206 beats . --json
+          python3 ../tempo_from_beats.py beats/assets/music.mp3.json assets/tempo.js
           npx --yes hyperframes@0.8.206 render --quality delivery --variables-file vars.json --output renders/render.mp4
           # 소리 보장: 하이라이트 음원을 ffmpeg로 직접 다시 입힘 (페이드 인 0.3초 / 아웃 1.2초)
           ffmpeg -y -v error -i renders/render.mp4 -i assets/music.mp3 -map 0:v -map 1:a -c:v copy \

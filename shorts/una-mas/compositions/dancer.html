@@ -1,0 +1,171 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+    }
+    #d-wrap {
+      position: absolute;
+      inset: 0;
+    }
+    #d-svg {
+      position: absolute;
+      left: 230px;
+      top: 470px;
+      width: 620px;
+      height: 1240px;
+      overflow: visible;
+    }
+    .d-line {
+      fill: none;
+      stroke: #ff2bd6;
+      stroke-width: 9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .d-fill {
+      fill: #1a0630;
+      stroke: #ff2bd6;
+      stroke-width: 7;
+      stroke-linejoin: round;
+    }
+    .d-cyan {
+      stroke: #00e5ff;
+    }
+    #d-skirt-shape {
+      fill: #4a0d5e;
+      stroke: #ff2bd6;
+      stroke-width: 7;
+      stroke-linejoin: round;
+    }
+    #d-flower {
+      fill: #ffe14d;
+      stroke: none;
+    }
+    #d-floorglow {
+      fill: rgba(0, 229, 255, 0.35);
+    }
+  </style>
+  <div id="root" data-composition-id="dancer" data-width="1080" data-height="1920">
+    <div id="d-wrap" class="clip" data-start="0" data-duration="15">
+      <svg id="d-svg" viewBox="0 0 400 800" aria-label="네온 라틴 댄서">
+        <defs>
+          <filter id="d-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <ellipse id="d-floorglow" cx="200" cy="716" rx="120" ry="16" />
+        <g id="d-all" filter="url(#d-glow)">
+          <!-- 다리 (엉덩이 관절 기준) -->
+          <g id="d-lleg">
+            <line class="d-line d-cyan" x1="188" y1="420" x2="182" y2="560" />
+            <g id="d-lshin">
+              <polyline class="d-line d-cyan" points="182,560 186,700 166,712" />
+            </g>
+          </g>
+          <g id="d-rleg">
+            <line class="d-line d-cyan" x1="212" y1="420" x2="218" y2="560" />
+            <g id="d-rshin">
+              <polyline class="d-line d-cyan" points="218,560 214,700 234,712" />
+            </g>
+          </g>
+          <!-- 치마 -->
+          <g id="d-skirt">
+            <path
+              id="d-skirt-shape"
+              d="M176 404 L224 404 L298 560 Q279 576 259 560 Q240 579 220 562 Q200 581 180 562 Q160 579 141 560 Q121 576 102 560 Z"
+            />
+          </g>
+          <!-- 상체: 몸통, 머리, 팔 -->
+          <g id="d-upper">
+            <g id="d-larm">
+              <line class="d-line" x1="172" y1="268" x2="130" y2="330" />
+              <g id="d-lfore">
+                <line class="d-line" x1="130" y1="330" x2="112" y2="395" />
+              </g>
+            </g>
+            <g id="d-rarm">
+              <line class="d-line" x1="228" y1="268" x2="270" y2="330" />
+              <g id="d-rfore">
+                <line class="d-line" x1="270" y1="330" x2="288" y2="395" />
+              </g>
+            </g>
+            <path
+              class="d-fill"
+              d="M168 258 C185 250 215 250 232 258 L220 340 C228 370 232 392 226 410 L174 410 C168 392 172 370 180 340 Z"
+            />
+            <g id="d-head">
+              <line class="d-line" x1="200" y1="236" x2="200" y2="256" />
+              <circle class="d-fill" cx="200" cy="204" r="31" />
+              <circle class="d-fill" cx="228" cy="180" r="15" />
+              <circle id="d-flower" cx="176" cy="182" r="8" />
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    const T = window.__tempo || { beat: 0.5, offset: 0 };
+    const beat = Math.min(0.75, Math.max(0.3, T.beat));
+    const lead = 0.08; // 박에 맞으려면 살짝 먼저 시작
+    const dur = beat * 0.45;
+
+    // 관절 기준점 (SVG 좌표)
+    const O = {
+      all: "200 712",
+      upper: "200 410",
+      skirt: "200 404",
+      head: "200 250",
+      larm: "172 268",
+      lfore: "130 330",
+      rarm: "228 268",
+      rfore: "270 330",
+      lleg: "188 420",
+      lshin: "182 560",
+      rleg: "212 420",
+      rshin: "218 560",
+    };
+    const parts = Object.keys(O);
+    const el = (k) => "#d-" + k;
+
+    // 자세: 왼쪽으로 흔들기 / 오른쪽으로 흔들기 / 회전 중 두 팔 위로
+    const LEFT = {
+      all: { x: -14, y: 0 }, upper: { rotation: -8 }, skirt: { rotation: 10 }, head: { rotation: 7 },
+      larm: { rotation: 25 }, lfore: { rotation: 75 }, rarm: { rotation: -150 }, rfore: { rotation: -25 },
+      lleg: { rotation: 6 }, lshin: { rotation: -16 }, rleg: { rotation: 0 }, rshin: { rotation: 0 },
+    };
+    const RIGHT = {
+      all: { x: 14, y: 0 }, upper: { rotation: 8 }, skirt: { rotation: -10 }, head: { rotation: -7 },
+      larm: { rotation: 150 }, lfore: { rotation: 25 }, rarm: { rotation: -25 }, rfore: { rotation: -75 },
+      lleg: { rotation: 0 }, lshin: { rotation: 0 }, rleg: { rotation: -6 }, rshin: { rotation: 16 },
+    };
+    const UP = {
+      all: { x: 0, y: -10 }, upper: { rotation: 0 }, skirt: { rotation: 0 }, head: { rotation: 0 },
+      larm: { rotation: 160 }, lfore: { rotation: 10 }, rarm: { rotation: -160 }, rfore: { rotation: -10 },
+      lleg: { rotation: 0 }, lshin: { rotation: 0 }, rleg: { rotation: 0 }, rshin: { rotation: 0 },
+    };
+
+    // 시작 자세
+    parts.forEach((k) => tl.set(el(k), { svgOrigin: O[k], ...LEFT[k] }, 0));
+    tl.set(el("all"), { scaleX: 1 }, 0);
+
+    // 박마다 자세 전환, 16박마다 마지막 2박은 두 팔 들고 한 바퀴
+    let k = 0;
+    for (let t = T.offset; t < 14.6; t += beat, k++) {
+      const at = Math.max(0, t - lead);
+      const phase = k % 16;
+      const pose = phase >= 14 ? UP : k % 2 === 0 ? LEFT : RIGHT;
+      parts.forEach((p) => tl.to(el(p), { ...pose[p], duration: dur, ease: "power2.out" }, at));
+      if (phase === 14) tl.to(el("all"), { scaleX: -1, duration: beat * 0.9, ease: "power1.inOut" }, at);
+      if (phase === 15) tl.to(el("all"), { scaleX: 1, duration: beat * 0.9, ease: "power1.inOut" }, at);
+    }
+    window.__timelines["dancer"] = tl;
+  </script>
+</template>
