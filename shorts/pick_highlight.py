@@ -11,6 +11,7 @@ pick_highlight.py — 곡에서 에너지가 가장 큰 구간을 골라 쇼츠�
 import argparse
 import subprocess
 import sys
+from pathlib import Path
 
 import numpy as np
 
@@ -46,6 +47,7 @@ def main():
     args = parser.parse_args()
 
     start = loudest_window(args.src, args.seconds)
+    Path(args.dest).parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         ["ffmpeg", "-y", "-v", "error", "-ss", f"{start:.2f}", "-t", str(args.seconds),
          "-i", args.src, "-c:a", "libmp3lame", "-b:a", "192k", args.dest],
