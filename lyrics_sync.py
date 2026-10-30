@@ -40,7 +40,9 @@ def transcribe(audio: Path, prompt: str = "", language: str = "es") -> list:
         language=language,
         initial_prompt=prompt[:800] or None,
         word_timestamps=True,
-        vad_filter=True,
+        # 음성 구간 필터(VAD)는 반주 위 노래를 자주 놓쳐서 끈다. 반복 환각을 막으려고 이전 문맥 의존도 끈다
+        vad_filter=False,
+        condition_on_previous_text=False,
     )
     lines = []
     for seg in segments:
