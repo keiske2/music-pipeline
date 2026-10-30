@@ -13,6 +13,7 @@ faster-whisper로 보컬을 받아쓰기(스페인어)해서 줄 단위 시간�
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -24,9 +25,18 @@ def transcribe(audio: Path, prompt: str = "", language: str = "es") -> list:
     """[{start, end, text}] 줄 목록. faster-whisper가 없으면 ImportError."""
     from faster_whisper import WhisperModel
 
+    import numpy as np
+
+    # faster-whisper 내장 디코더(PyAV)는 버전 궁합 문제가 있어 ffmpeg로 16kHz 모노 PCM을 직접 만든다
+    pcm = subprocess.run(
+        ["ffmpeg", "-v", "error", "-i", str(audio), "-f", "s16le", "-ac", "1", "-ar", "16000", "-"],
+        capture_output=True, check=True,
+    ).stdout
+    samples = np.frombuffer(pcm, np.int16).astype(np.float32) / 32768.0
+
     model = WhisperModel(MODEL, device="cpu", compute_type="int8")
     segments, _ = model.transcribe(
-        str(audio),
+        samples,
         language=language,
         initial_prompt=prompt[:800] or None,
         word_timestamps=True,
