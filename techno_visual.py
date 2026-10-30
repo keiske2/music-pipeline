@@ -160,8 +160,8 @@ def render_loop(out_path: Path, pattern: str = "grid",
 
 
 def compose_final(loop_path: Path, music_path: Path, out_path: Path,
-                  palette=((255, 40, 180), (0, 230, 255))) -> Path:
-    """루프 영상을 음악 길이만큼 반복 + 음악 반응형 네온 파형을 합성."""
+                  palette=((255, 40, 180), (0, 230, 255)), subtitles: Path | None = None) -> Path:
+    """루프 영상을 음악 길이만큼 반복 + 음악 반응형 네온 파형을 합성. subtitles(ASS)가 있으면 가사를 입힌다."""
     probe = subprocess.run(
         ["ffprobe", "-v", "quiet", "-show_entries", "format=duration",
          "-of", "csv=p=0", str(music_path)],
@@ -176,8 +176,12 @@ def compose_final(loop_path: Path, music_path: Path, out_path: Path,
         f"format=gbrp,pad=1920:1080:0:800:black[wave];"
         f"[0:v]fps={FPS},format=gbrp[bg];"
         # YUV에서 screen 블렌드하면 색이 틀어지므로 반드시 RGB(gbrp)에서 블렌드
-        f"[bg][wave]blend=all_mode=screen,format=yuv420p[v]"
+        f"[bg][wave]blend=all_mode=screen"
     )
+    if subtitles:
+        path = str(subtitles).replace("\\", "/").replace(":", "\\:").replace("'", "\\'")
+        filter_complex += f",subtitles='{path}'"
+    filter_complex += ",format=yuv420p[v]"
 
     subprocess.run([
         "ffmpeg", "-y", "-loglevel", "error",

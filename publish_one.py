@@ -16,6 +16,7 @@ import json
 import random
 import re
 import sys
+import unicodedata
 from datetime import datetime
 from pathlib import Path
 
@@ -66,6 +67,20 @@ def make_meta(file_name: str) -> dict:
             "tags": TAGS + [tag], "categoryId": "10"}
 
 
+def find_meta(file_name: str) -> Path | None:
+    """meta/*.json 중 제목 앞부분(| 앞)이 곡 파일 이름과 같은 것. 예: Fuego_en_la_Pista.mp3 ↔ "Fuego en la Pista | ..." """
+    def norm(t: str) -> str:
+        t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode().lower()
+        return re.sub(r"[^a-z0-9]", "", t)
+
+    stem = norm(re.sub(r"_version_\d+$", "", Path(file_name).stem, flags=re.IGNORECASE))
+    for p in sorted((ROOT / "meta").glob("*.json")):
+        title = json.loads(p.read_text(encoding="utf-8")).get("title", "")
+        if stem and norm(title.split("|")[0]) == stem:
+            return p
+    return None
+
+
 def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 128) -> str:
     """드라이브 곡 1개를 영상으로 만들어 업로드하고 영상 URL을 반환."""
     uploaded = load_uploaded()
@@ -79,8 +94,18 @@ def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 
     pattern = random.choice(VISUAL_PATTERNS)
     palette = random.choice(PALETTES)
     print(f"영상 생성: {pattern} 패턴")
-    loop = techno_visual.render_loop(job / "loop.mp4", pattern, palette, bpm)
-    final = techno_visual.compose_final(loop, music, job / "final.mp4", palette)
+    loop = techno_visual.render_loop(job / "loop.mp4", pattern, palette, meta.get("bpm", bpm))
+    subs = None
+    try:
+        import lyrics_sync
+        print("가사 타이밍 추출 (faster-whisper)")
+        lines = lyrics_sync.transcribe(music, meta.get("lyrics", ""))
+        if lines:
+            subs = lyrics_sync.to_ass(lines, job / "lyrics.ass")
+            print(f"화면 가사 {len(lines)}줄")
+    except Exception as e:  # 가사 실패해도 영상은 올린다
+        print(f"⚠️ 가사 자막 생략: {e}")
+    final = techno_visual.compose_final(loop, music, job / "final.mp4", palette, subs)
 
     video_id = youtube_upload.upload(final, meta, privacy)
     url = f"https://youtu.be/{video_id}"
@@ -108,7 +133,10 @@ def main():
     if not songs:
         raise RuntimeError(f"드라이브 Suno 폴더에서 '{args.name}' 곡을 찾지 못함")
     song = songs[0]
-    meta = (json.loads(args.meta.read_text(encoding="utf-8")) if args.meta
+    meta_path = args.meta or find_meta(song["name"])
+    if meta_path:
+        print(f"메타: {meta_path}")
+    meta = (json.loads(meta_path.read_text(encoding="utf-8")) if meta_path
             else make_meta(song["name"]))
     publish_song(song, meta, args.privacy, args.bpm)
 

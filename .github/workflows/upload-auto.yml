@@ -17,7 +17,7 @@ concurrency:
 jobs:
   upload:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -26,7 +26,7 @@ jobs:
       - name: 패키지 설치
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
-          pip install -q requests numpy
+          pip install -q requests numpy faster-whisper
       - name: 새 곡 1개 업로드
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}

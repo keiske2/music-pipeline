@@ -1,0 +1,61 @@
+name: 가사 자막 테스트 (업로드 안 함)
+
+# 드라이브 곡 1개에서 가사 타이밍을 뽑아 로그에 출력하고, 자막 입힌 앞부분 30초를 아티팩트로 남긴다.
+on:
+  workflow_dispatch:
+    inputs:
+      song:
+        description: "드라이브 Suno 폴더의 곡 파일 이름 일부"
+        required: true
+      meta:
+        description: "가사 힌트용 메타 JSON (비우면 곡 이름으로 자동 매칭)"
+        required: false
+        default: ""
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 패키지 설치
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q requests numpy faster-whisper
+      - name: 가사 추출 + 자막 미리보기
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          SONG: ${{ inputs.song }}
+          META: ${{ inputs.meta }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess
+          from pathlib import Path
+          import drive_fetch, lyrics_sync, techno_visual
+          from publish_one import find_meta
+          song = next(s for s in drive_fetch.list_songs() if os.environ["SONG"] in s["name"])
+          job = Path("work/test"); music = drive_fetch.download(song["id"], job / "music.mp3")
+          meta_path = Path(os.environ["META"]) if os.environ["META"] else find_meta(song["name"])
+          prompt = json.loads(meta_path.read_text(encoding="utf-8")).get("lyrics", "") if meta_path else ""
+          print("곡:", song["name"], "/ 메타:", meta_path)
+          lines = lyrics_sync.transcribe(music, prompt)
+          for l in lines:
+              print(f"{l['start']:7.2f}-{l['end']:7.2f}  {l['text']}")
+          print("총", len(lines), "줄")
+          ass = lyrics_sync.to_ass(lines, job / "lyrics.ass")
+          loop = techno_visual.render_loop(job / "loop.mp4", "tunnel", ((255, 40, 180), (0, 230, 255)), 128)
+          techno_visual.compose_final(loop, music, job / "final.mp4", subtitles=ass)
+          subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(job / "final.mp4"),
+                          "-t", "60", "-c", "copy", "preview.mp4"], check=True)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lyrics-preview
+          path: |
+            preview.mp4
+            work/test/lyrics.ass
