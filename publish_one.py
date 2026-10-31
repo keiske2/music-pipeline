@@ -81,7 +81,27 @@ def find_meta(file_name: str) -> Path | None:
     return None
 
 
-def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 128) -> str:
+def load_meta(meta_path: Path, file_name: str) -> dict:
+    """메타 JSON을 읽고, 파일이 2번 이상 버전이면 제목에 (Ver. N)을 붙여 같은 제목이 겹치지 않게 한다."""
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    version = re.search(r"_version_(\d+)$", Path(file_name).stem, re.IGNORECASE)
+    if version and version.group(1) != "1":
+        head, sep, tail = meta["title"].partition(" | ")
+        meta["title"] = f"{head} (Ver. {version.group(1)}){sep}{tail}"[:100]
+    return meta
+
+
+def find_bg_video(file_name: str) -> dict | None:
+    """드라이브에서 곡 이름과 같은 이름의 영상(예: Fuego_en_la_Pista.mp4)을 찾는다. 없으면 None."""
+    stem = re.sub(r"_version_\d+$", "", Path(file_name).stem, flags=re.IGNORECASE)
+    try:
+        return drive_fetch.find_video(stem)
+    except RuntimeError:
+        return None
+
+
+def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 128,
+                 bg_video: dict | None = None) -> str:
     """드라이브 곡 1개를 영상으로 만들어 업로드하고 영상 URL을 반환."""
     uploaded = load_uploaded()
     if song["id"] in uploaded:
@@ -91,10 +111,16 @@ def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 
     job = WORK / Path(song["name"]).stem
     music = drive_fetch.download(song["id"], job / "music.mp3")
 
-    pattern = random.choice(VISUAL_PATTERNS)
     palette = random.choice(PALETTES)
-    print(f"영상 생성: {pattern} 패턴")
-    loop = techno_visual.render_loop(job / "loop.mp4", pattern, palette, meta.get("bpm", bpm))
+    if bg_video:
+        # 제미나이 등으로 만든 영상을 배경으로 반복
+        print(f"배경 영상: {bg_video['name']}")
+        src = drive_fetch.download(bg_video["id"], job / "bg_src.mp4")
+        loop = techno_visual.fit_video(src, job / "loop.mp4")
+    else:
+        pattern = random.choice(VISUAL_PATTERNS)
+        print(f"영상 생성: {pattern} 패턴")
+        loop = techno_visual.render_loop(job / "loop.mp4", pattern, palette, meta.get("bpm", bpm))
     subs = None
     try:
         import lyrics_sync
@@ -127,6 +153,7 @@ def main():
     parser.add_argument("meta", type=Path, nargs="?", help="제목·설명·태그 JSON (없으면 자동 생성)")
     parser.add_argument("--privacy", default="private", choices=["private", "unlisted", "public"])
     parser.add_argument("--bpm", type=float, default=128, help="영상 박자 펄스용 BPM")
+    parser.add_argument("--video", default="", help="배경으로 쓸 드라이브 영상 이름 일부 (비우면 곡 이름과 같은 영상, 없으면 테크노 영상)")
     args = parser.parse_args()
 
     songs = [s for s in drive_fetch.list_songs() if args.name in s["name"]]
@@ -136,9 +163,9 @@ def main():
     meta_path = args.meta or find_meta(song["name"])
     if meta_path:
         print(f"메타: {meta_path}")
-    meta = (json.loads(meta_path.read_text(encoding="utf-8")) if meta_path
-            else make_meta(song["name"]))
-    publish_song(song, meta, args.privacy, args.bpm)
+    meta = load_meta(meta_path, song["name"]) if meta_path else make_meta(song["name"])
+    bg = drive_fetch.find_video(args.video) if args.video else find_bg_video(song["name"])
+    publish_song(song, meta, args.privacy, args.bpm, bg)
 
 
 if __name__ == "__main__":

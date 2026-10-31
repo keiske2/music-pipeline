@@ -1,0 +1,30 @@
+name: 영상 제목 바꾸기
+
+on:
+  workflow_dispatch:
+    inputs:
+      video:
+        description: "유튜브 영상 ID 또는 링크 (예: https://youtu.be/GMlP1wiI7gw)"
+        required: true
+      title:
+        description: "새 제목 (100자 이내)"
+        required: true
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests
+      - name: 제목 변경
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          VIDEO: ${{ inputs.video }}
+          TITLE: ${{ inputs.title }}
+        run: |
+          python -c "import os; from youtube_upload import set_title; v=os.environ['VIDEO'].rstrip('/').rsplit('/',1)[-1].split('=')[-1]; print('바뀐 제목:', set_title(v, os.environ['TITLE']))"

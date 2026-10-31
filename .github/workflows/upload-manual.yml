@@ -11,6 +11,10 @@ on:
         description: "메타 JSON 경로 (비우면 파일 이름으로 제목·해시태그 자동 생성)"
         required: false
         default: ""
+      video:
+        description: "배경 영상: 드라이브 영상 파일 이름 일부 (비우면 곡 이름과 같은 영상, 없으면 테크노 영상)"
+        required: false
+        default: ""
       privacy:
         description: "공개 범위"
         type: choice
@@ -45,11 +49,12 @@ jobs:
           SONG: ${{ inputs.song }}
           META: ${{ inputs.meta }}
           PRIVACY: ${{ inputs.privacy }}
+          VIDEO: ${{ inputs.video }}
         run: |
           if [ -n "$META" ]; then
-            python publish_one.py "$SONG" "$META" --privacy "$PRIVACY"
+            python publish_one.py "$SONG" "$META" --privacy "$PRIVACY" --video "$VIDEO"
           else
-            python publish_one.py "$SONG" --privacy "$PRIVACY"
+            python publish_one.py "$SONG" --privacy "$PRIVACY" --video "$VIDEO"
           fi
       - name: 업로드 기록 저장
         run: |

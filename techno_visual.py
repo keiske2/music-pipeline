@@ -159,6 +159,17 @@ def render_loop(out_path: Path, pattern: str = "grid",
     return out_path
 
 
+def fit_video(src: Path, out_path: Path) -> Path:
+    """외부 영상(제미나이·Veo 등)을 1920×1080·30fps·무음 루프용으로 맞춘다. 비율이 다르면 꽉 채워 자른다."""
+    subprocess.run([
+        "ffmpeg", "-y", "-loglevel", "error", "-i", str(src),
+        "-vf", f"scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps={FPS},format=yuv420p",
+        "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "18",
+        str(out_path),
+    ], check=True)
+    return out_path
+
+
 def compose_final(loop_path: Path, music_path: Path, out_path: Path,
                   palette=((255, 40, 180), (0, 230, 255)), subtitles: Path | None = None) -> Path:
     """루프 영상을 음악 길이만큼 반복 + 음악 반응형 네온 파형을 합성. subtitles(ASS)가 있으면 가사를 입힌다."""

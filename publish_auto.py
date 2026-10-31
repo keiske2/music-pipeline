@@ -8,11 +8,10 @@ GitHub Actions 예약 실행(토·일 1곡씩)에서 쓴다. 새 곡이 없으�
 """
 
 import argparse
-import json
 import sys
 
 import drive_fetch
-from publish_one import find_meta, load_uploaded, make_meta, publish_song
+from publish_one import find_bg_video, find_meta, load_meta, load_uploaded, make_meta, publish_song
 
 
 def main():
@@ -29,9 +28,8 @@ def main():
     song = min(pending, key=lambda s: s["createdTime"])   # 오래된 곡부터
     print(f"대기 중인 곡 {len(pending)}개 중 1곡 업로드")
     meta_path = find_meta(song["name"])
-    meta = (json.loads(meta_path.read_text(encoding="utf-8")) if meta_path
-            else make_meta(song["name"]))
-    publish_song(song, meta, args.privacy)
+    meta = load_meta(meta_path, song["name"]) if meta_path else make_meta(song["name"])
+    publish_song(song, meta, args.privacy, bg_video=find_bg_video(song["name"]))
 
 
 if __name__ == "__main__":

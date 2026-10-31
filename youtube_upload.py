@@ -145,6 +145,30 @@ def set_privacy(video_id: str, privacy: str = "public") -> str:
     return resp.json().get("status", {}).get("privacyStatus")
 
 
+def set_title(video_id: str, title: str) -> str:
+    """이미 올린 영상의 제목만 바꾼다(설명·태그·카테고리는 그대로). 바뀐 제목을 반환."""
+    token = access_token()
+    headers = {"Authorization": f"Bearer {token}"}
+    got = requests.get(VIDEOS_URL, params={"part": "snippet", "id": video_id},
+                       headers=headers, timeout=30)
+    if got.status_code != 200:
+        raise RuntimeError(f"영상 조회 실패 ({got.status_code}): {got.text[:300]}")
+    items = got.json().get("items", [])
+    if not items:
+        raise RuntimeError(f"영상을 찾지 못함: {video_id}")
+    old = items[0]["snippet"]
+    snippet = {"title": title[:100], "categoryId": old.get("categoryId", MUSIC_CATEGORY),
+               "description": old.get("description", ""), "tags": old.get("tags", [])}
+    if old.get("defaultLanguage"):
+        snippet["defaultLanguage"] = old["defaultLanguage"]
+    resp = requests.put(VIDEOS_URL, params={"part": "snippet"},
+                        headers={**headers, "Content-Type": "application/json"},
+                        data=json.dumps({"id": video_id, "snippet": snippet}), timeout=30)
+    if resp.status_code != 200:
+        raise RuntimeError(f"제목 변경 실패 ({resp.status_code}): {resp.text[:300]}")
+    return resp.json()["snippet"]["title"]
+
+
 def main():
     parser = argparse.ArgumentParser(description="YouTube 업로드")
     parser.add_argument("video", type=Path)
