@@ -159,11 +159,26 @@ def render_loop(out_path: Path, pattern: str = "grid",
     return out_path
 
 
-def fit_video(src: Path, out_path: Path) -> Path:
-    """외부 영상(제미나이·Veo 등)을 1920×1080·30fps·무음 루프용으로 맞춘다. 비율이 다르면 꽉 채워 자른다."""
+def fit_video(src: Path, out_path: Path, boomerang: bool = True) -> Path:
+    """외부 영상(제미나이·Veo 등)을 1920×1080·30fps·무음 루프용으로 맞춘다. 비율이 다르면 꽉 채워 자른다.
+
+    boomerang=True면 정방향 → 역방향을 이어 붙여, 반복해도 끊김 없이 이어지는 부메랑 루프로 만든다.
+    이음매에서 같은 프레임이 두 번 나오지 않도록 역방향의 첫·마지막 프레임은 뺀다.
+    """
+    fit = f"scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps={FPS},format=yuv420p"
+    if boomerang:
+        dur = float(subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(src)],
+            capture_output=True, text=True, check=True).stdout.strip())
+        n = int(round(dur * FPS))
+        graph = (f"[0:v]{fit},split[f][b];"
+                 f"[b]reverse,trim=start_frame=1:end_frame={max(n - 1, 2)},setpts=PTS-STARTPTS[r];"
+                 f"[f][r]concat=n=2:v=1:a=0[v]")
+        args = ["-filter_complex", graph, "-map", "[v]"]
+    else:
+        args = ["-vf", fit]
     subprocess.run([
-        "ffmpeg", "-y", "-loglevel", "error", "-i", str(src),
-        "-vf", f"scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps={FPS},format=yuv420p",
+        "ffmpeg", "-y", "-loglevel", "error", "-i", str(src), *args,
         "-an", "-c:v", "libx264", "-preset", "medium", "-crf", "18",
         str(out_path),
     ], check=True)

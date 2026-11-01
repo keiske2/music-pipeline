@@ -116,7 +116,8 @@ def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 
         # 제미나이 등으로 만든 영상을 배경으로 반복
         print(f"배경 영상: {bg_video['name']}")
         src = drive_fetch.download(bg_video["id"], job / "bg_src.mp4")
-        loop = techno_visual.fit_video(src, job / "loop.mp4")
+        loop = techno_visual.fit_video(src, job / "loop.mp4", boomerang=True)
+        meta = {**meta, "synthetic": True}
     else:
         pattern = random.choice(VISUAL_PATTERNS)
         print(f"영상 생성: {pattern} 패턴")

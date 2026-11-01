@@ -62,6 +62,8 @@ def upload(video_path: Path, meta: dict, privacy: str = "private") -> str:
         "status": {
             "privacyStatus": privacy,
             "selfDeclaredMadeForKids": False,
+            # AI로 만든 사실적인 영상(제미나이·Veo 등)이면 유튜브 'AI 생성 콘텐츠' 표시
+            "containsSyntheticMedia": bool(meta.get("synthetic", False)),
         },
     }
     size = video_path.stat().st_size
