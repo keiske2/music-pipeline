@@ -13,6 +13,7 @@ publish_one.py — 드라이브 곡 1개 → 테크노 영상 → 유튜브 업�
 
 import argparse
 import json
+import os
 import random
 import re
 import sys
@@ -145,6 +146,14 @@ def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 
     uploaded[song["id"]] = url
     save_uploaded(uploaded)
     print(f"업로드 완료: {meta['title']} → {url} ({privacy})")
+    result = youtube_upload.verify(video_id, privacy)
+    print(f"검수 통과: 처리 완료, {result['privacy']}, 길이 {result['duration']}")
+    summary = os.getenv("GITHUB_STEP_SUMMARY")
+    if summary:
+        with open(summary, "a", encoding="utf-8") as f:
+            f.write(f"### ✅ 업로드 완료 — Está bien\n- {meta['title']}\n- {url}\n"
+                    f"- 배경: {'제미나이 영상(부메랑)' if bg_video else '테크노 영상'}\n"
+                    f"- 화면 가사: {'있음' if subs else '없음'}\n")
     return url
 
 

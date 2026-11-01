@@ -22,14 +22,18 @@ def main():
     uploaded = load_uploaded()
     pending = [s for s in drive_fetch.list_songs() if s["id"] not in uploaded]
     if not pending:
-        print("새로 올릴 곡이 없음 — 종료")
-        return
+        # 알림을 받도록 실패로 끝낸다 (GitHub가 실패 메일을 보냄)
+        raise RuntimeError("이번 주말에 올릴 새 곡이 드라이브 Suno 폴더에 없음 — 곡을 넣어 주세요")
 
     song = min(pending, key=lambda s: s["createdTime"])   # 오래된 곡부터
     print(f"대기 중인 곡 {len(pending)}개 중 1곡 업로드")
     meta_path = find_meta(song["name"])
     meta = load_meta(meta_path, song["name"]) if meta_path else make_meta(song["name"])
-    publish_song(song, meta, args.privacy, bg_video=find_bg_video(song["name"]))
+    bg = find_bg_video(song["name"])
+    publish_song(song, meta, args.privacy, bg_video=bg)
+    if not bg:
+        # 업로드는 됐지만 제미나이 영상이 없어 테크노 영상으로 올렸음을 알림
+        raise RuntimeError(f"업로드는 완료, 단 드라이브에 '{song['name'].rsplit('.', 1)[0]}' 영상이 없어 테크노 영상으로 올림")
 
 
 if __name__ == "__main__":

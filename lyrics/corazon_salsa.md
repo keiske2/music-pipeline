@@ -6,7 +6,12 @@
 
 **Style of Music** (그대로 붙여넣기):
 ```
-salsa dura, piano montuno, brass section, trumpets and trombones, congas, timbales, clave, 190 bpm, powerful female lead vocal, coro call-and-response, zumba dance fitness, latin party, modern mix
+salsa dura, piano montuno, brass section, trumpets and trombones, congas, timbales, clave, 190 bpm, powerful female lead vocal, coro call-and-response, zumba dance fitness, latin party, modern mix, studio recording
+```
+
+**Exclude Styles** (라이브 느낌 빼기, 그대로 붙여넣기):
+```
+live, live recording, concert, crowd noise, audience, applause, lo-fi
 ```
 
 **Lyrics** (그대로 붙여넣기):

@@ -147,6 +147,35 @@ def set_privacy(video_id: str, privacy: str = "public") -> str:
     return resp.json().get("status", {}).get("privacyStatus")
 
 
+def verify(video_id: str, privacy: str = "public", timeout: int = 900) -> dict:
+    """업로드한 영상이 유튜브에서 처리 완료됐는지, 공개 범위가 맞는지 검수. 문제가 있으면 RuntimeError."""
+    import time
+
+    token = access_token()
+    deadline = time.time() + timeout
+    while True:
+        got = requests.get(VIDEOS_URL, params={"part": "status,processingDetails,contentDetails", "id": video_id},
+                           headers={"Authorization": f"Bearer {token}"}, timeout=30)
+        if got.status_code != 200:
+            raise RuntimeError(f"검수 조회 실패 ({got.status_code}): {got.text[:300]}")
+        items = got.json().get("items", [])
+        if not items:
+            raise RuntimeError(f"검수 실패: 유튜브에서 영상을 찾을 수 없음 ({video_id})")
+        status = items[0]["status"]
+        upload = status.get("uploadStatus")
+        if upload in ("failed", "rejected", "deleted"):
+            reason = status.get("failureReason") or status.get("rejectionReason") or ""
+            raise RuntimeError(f"검수 실패: 유튜브 처리 {upload} {reason}")
+        if upload == "processed":
+            if status.get("privacyStatus") != privacy:
+                raise RuntimeError(f"검수 실패: 공개 범위가 {status.get('privacyStatus')} (요청 {privacy})")
+            return {"privacy": status["privacyStatus"],
+                    "duration": items[0].get("contentDetails", {}).get("duration")}
+        if time.time() > deadline:
+            raise RuntimeError(f"검수 실패: {timeout // 60}분 지나도 유튜브 처리 중 (uploadStatus={upload})")
+        time.sleep(20)
+
+
 def set_title(video_id: str, title: str) -> str:
     """이미 올린 영상의 제목만 바꾼다(설명·태그·카테고리는 그대로). 바뀐 제목을 반환."""
     token = access_token()
