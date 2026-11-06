@@ -127,7 +127,7 @@ def publish_song(song: dict, meta: dict, privacy: str = "private", bpm: float = 
     try:
         import lyrics_sync
         print("가사 타이밍 추출 (faster-whisper)")
-        lines = lyrics_sync.transcribe(music, meta.get("lyrics", ""))
+        lines = lyrics_sync.transcribe(music, meta.get("lyrics", ""), meta.get("language", "es"))
         if lines:
             subs = lyrics_sync.to_ass(lines, job / "lyrics.ass")
             print(f"화면 가사 {len(lines)}줄")
