@@ -1,0 +1,163 @@
+[
+ {
+  "key": "sol_cumbia",
+  "title": "Cumbia del Sol",
+  "genre": "Cumbia",
+  "genre_ko": "쿰비아",
+  "bpm": 105,
+  "style": "festive colombian cumbia, accordion, guacharaca, caja vallenata, gaita flute, bass, 105 bpm, bright female lead vocal, group chant chorus, zumba dance fitness, sunny latin party, bright modern mix, studio recording",
+  "exclude": "live, live recording, concert, crowd noise, audience, applause, lo-fi",
+  "lyrics": "[Intro]\n¡Ay, qué calor!\n¡Cumbia del sol!\n\n[Verse 1]\nSale el sol temprano y suena el acordeón\nLa plaza se llena de color y de canción\nPaso a la derecha, paso a la izquierda\nCon la guacharaca que nadie se pierda\n\n[Pre-Chorus]\nSube los brazos, mueve los pies\nQue la cumbia empieza otra vez\n\n[Chorus]\n¡Cumbia del sol, cumbia del amor!\nBaila conmigo bajo este calor\n¡Cumbia del sol, vamos a girar!\nQue la alegría no deja de sonar\n\n[Verse 2]\nLa falda se abre como una flor\nEl tambor me dice que baile mejor\nHombro con hombro, gira la rueda\nNadie se cansa, nadie se queda\n\n[Pre-Chorus]\nSube los brazos, mueve los pies\nQue la cumbia empieza otra vez\n\n[Chorus]\n¡Cumbia del sol, cumbia del amor!\nBaila conmigo bajo este calor\n¡Cumbia del sol, vamos a girar!\nQue la alegría no deja de sonar\n\n[Break]\n¡Palmas arriba!\n¡Ahora abajo!\n¡Y todos juntos!\n\n[Final Chorus]\n¡Cumbia del sol, cumbia del amor!\nBaila conmigo bajo este calor\n¡Cumbia del sol, vamos a girar!\nQue la alegría no deja de sonar\n\n[Outro]\n¡Cumbia del sol! ¡Ay, qué calor!",
+  "mood_ko": "흰 레이스 블라우스·주황 스커트 · 한낮의 식민지풍 광장",
+  "v": {
+   "h": "waist",
+   "dancer": "A sunny, cheerful Colombian dancer in her mid 20s with long dark hair in a side braid and a small orange flower clip, wearing a white lace off-shoulder blouse and a wide tangerine-orange flared skirt",
+   "dance": "cumbia",
+   "moves": "small shuffling cumbia steps, relaxed hip sways, shoulders rolling, and both hands lifting the skirt edges to swirl it in wide circles, laughing",
+   "setting": "a colonial town plaza in warm late-afternoon sun, pastel yellow and turquoise colonial walls, wooden balconies with hanging bougainvillea, colorful paper flags strung overhead",
+   "floor": "dark sun-warmed terracotta paving stones in soft shadow",
+   "look": "Warm sunny palette with orange, turquoise and pink accents, gentle lens flare, joyful festive mood"
+  }
+ },
+ {
+  "key": "final_reggaeton",
+  "title": "Hasta el Final",
+  "genre": "Reggaeton",
+  "genre_ko": "레게톤",
+  "bpm": 96,
+  "style": "reggaeton, dembow beat, 96 bpm, heavy 808 bass, dark synth stabs, confident female lead vocal, chanted workout hook, zumba dance fitness, latin urban gym anthem, punchy modern mix, studio recording",
+  "exclude": "live, live recording, concert, crowd noise, audience, applause, lo-fi",
+  "lyrics": "[Intro]\n¡Yeah! ¡Dale!\nHasta el final, ¡vamos!\n\n[Verse 1]\nSuena el dembow, retumba la sala\nCada paso cuenta, nadie se para\nBrazos arriba, rodilla al pecho\nCon cada latido rompemos el techo\n\n[Pre-Chorus]\nUna más, una más\nQue no vamos a parar\n\n[Chorus]\n¡Hasta el final, hasta el final!\nSuda la frente, se siente brutal\n¡Hasta el final, dale sin miedo!\nQue esta noche somos fuego\n\n[Verse 2]\nSalto a la izquierda, salto a la derecha\nRespira profundo, la meta está cerca\nMira tu reflejo, mira tu fuerza\nNadie te para cuando el bajo empieza\n\n[Pre-Chorus]\nUna más, una más\nQue no vamos a parar\n\n[Chorus]\n¡Hasta el final, hasta el final!\nSuda la frente, se siente brutal\n¡Hasta el final, dale sin miedo!\nQue esta noche somos fuego\n\n[Break]\n¡Cuenta conmigo!\n¡Cinco, seis, siete, ocho!\n¡Arriba!\n\n[Final Chorus]\n¡Hasta el final, hasta el final!\nSuda la frente, se siente brutal\n¡Hasta el final, dale sin miedo!\nQue esta noche somos fuego\n\n[Outro]\n¡Hasta el final! ¡Yeah!",
+  "mood_ko": "검정·라임 스포츠웨어 · 네온 조명 체육관",
+  "v": {
+   "h": "waist",
+   "dancer": "A strong, energetic Latina dancer in her mid 20s with box braids tied up high, wearing a lime-green sports bra top, black high-waisted leggings and white sneakers",
+   "dance": "reggaeton",
+   "moves": "hard-hitting dembow hip bounces, knee lifts to the chest, sharp arm punches on the beat and a confident head nod, full of energy",
+   "setting": "an industrial-style dance fitness studio at night, exposed brick walls lit by lime-green and magenta neon tube lights, a large mirror wall softly out of focus, light haze",
+   "floor": "a dark rubber gym floor with faint neon reflections",
+   "look": "High-contrast lime and magenta palette, crisp urban music-video style, powerful high-energy mood"
+  }
+ },
+ {
+  "key": "calle_salsa",
+  "title": "Salsa en la Calle",
+  "genre": "Salsa",
+  "genre_ko": "살사",
+  "bpm": 180,
+  "style": "new york style salsa, piano montuno, brass section, trombones and trumpets, congas, bongos, timbales, cowbell, clave, 180 bpm, powerful female lead vocal, coro call-and-response, zumba dance fitness, street party, modern mix, studio recording",
+  "exclude": "live, live recording, concert, crowd noise, audience, applause, lo-fi",
+  "lyrics": "[Intro]\n¡Wepa! ¡Salsa en la calle!\n¡Sabor!\n\n[Verse 1]\nSe abre la ventana y suena el trombón\nBaja todo el barrio a la esquina del son\nLa clave camina, el piano contesta\nCada viernes de noche aquí hay fiesta\n\n[Pre-Chorus]\nSigue la clave, no pierdas el paso\nQue esta salsa te lleva del brazo\n\n[Chorus]\n¡Salsa en la calle, salsa de verdad!\nSuena en la esquina, suena en la ciudad\n¡Salsa en la calle, vamos a gozar!\nHasta la luna se pone a bailar\n\n[Verse 2]\nCruzo, doy la vuelta, vuelvo a empezar\nLos pies se adelantan, no saben parar\nSuben los metales, late el corazón\nToda la cuadra canta esta canción\n\n[Pre-Chorus]\nSigue la clave, no pierdas el paso\nQue esta salsa te lleva del brazo\n\n[Chorus]\n¡Salsa en la calle, salsa de verdad!\nSuena en la esquina, suena en la ciudad\n¡Salsa en la calle, vamos a gozar!\nHasta la luna se pone a bailar\n\n[Montuno / Coro]\n¡Salsa en la calle! (¡Wepa!)\n¡Salsa en la calle! (¡Sabor!)\n¡Que no pare la rumba!\n\n[Final Chorus]\n¡Salsa en la calle, salsa de verdad!\nSuena en la esquina, suena en la ciudad\n¡Salsa en la calle, vamos a gozar!\nHasta la luna se pone a bailar\n\n[Outro]\n¡Salsa en la calle! ¡Wepa!",
+  "mood_ko": "코발트 원숄더 드레스 · 밤의 뉴욕 골목 블록파티",
+  "v": {
+   "h": "chest",
+   "dancer": "A vibrant, confident Latina salsa dancer in her late 20s with voluminous curly hair and gold hoop earrings, wearing a cobalt-blue one-shoulder dress with a flared ruffled skirt",
+   "dance": "New York style salsa",
+   "moves": "quick on-two basic steps forward and back, crisp shoulder shimmies, playful hand styling and one fast single spin that flares the skirt",
+   "setting": "a New York city block party at night, red brick tenement walls with fire escapes, strings of colorful bulb lights overhead, a glowing bodega sign softly out of focus",
+   "floor": "dark wet asphalt reflecting the colorful bulb lights",
+   "look": "Rich cobalt, red and warm gold palette, high contrast, lively summer-night street mood"
+  }
+ },
+ {
+  "key": "dime_bachata",
+  "title": "Dime Que Sí",
+  "genre": "Bachata",
+  "genre_ko": "바차타",
+  "bpm": 128,
+  "style": "modern bachata, requinto guitar, rhythm guitar, bongos, güira, electric bass, 128 bpm, warm female lead vocal, romantic and playful, zumba dance fitness, bright modern mix, studio recording",
+  "exclude": "live, live recording, concert, crowd noise, audience, applause, lo-fi",
+  "lyrics": "[Intro]\n¡Ay, bachata!\nDime que sí...\n\n[Verse 1]\nSuena la guitarra cerca del mar\nTu mirada me invita a bailar\nPaso a la izquierda, toque y cadera\nContigo la noche es una primavera\n\n[Pre-Chorus]\nVen, ven conmigo\nSigue mi latido\n\n[Chorus]\n¡Dime que sí, dime que sí!\nBaila bachata cerca de mí\n¡Dime que sí, no te vayas más!\nQue esta guitarra nos lleva al compás\n\n[Verse 2]\nGira despacio, vuelve a mis brazos\nEl bongó marca todos los pasos\nSonríe, respira, mueve los hombros\nEsta bachata nos llena de asombro\n\n[Pre-Chorus]\nVen, ven conmigo\nSigue mi latido\n\n[Chorus]\n¡Dime que sí, dime que sí!\nBaila bachata cerca de mí\n¡Dime que sí, no te vayas más!\nQue esta guitarra nos lleva al compás\n\n[Break]\n¡Suave, suave!\n¡Ahora rápido!\n¡Otra vez!\n\n[Final Chorus]\n¡Dime que sí, dime que sí!\nBaila bachata cerca de mí\n¡Dime que sí, no te vayas más!\nQue esta guitarra nos lleva al compás\n\n[Outro]\nDime que sí... ¡ay, bachata!",
+  "mood_ko": "코랄 랩 드레스 · 해 질 녘 해변 부두",
+  "v": {
+   "h": "waist",
+   "dancer": "A warm, graceful Dominican dancer in her late 20s with shoulder-length wavy dark hair, wearing a coral-pink wrap dress that flows at the knee and small gold earrings",
+   "dance": "bachata",
+   "moves": "the side-to-side bachata basic with a soft hip pop on the fourth beat, smooth body waves, and gentle hand styling near her hair, smiling softly",
+   "setting": "a wooden pier on a Caribbean beach at dusk, a pink and violet sky, soft turquoise sea behind her, warm lanterns hanging from wooden posts",
+   "floor": "dark weathered wooden planks glowing with lantern light",
+   "look": "Soft pastel pink and violet palette with warm lantern accents, romantic dreamy glow"
+  }
+ },
+ {
+  "key": "palmas_rumba",
+  "title": "Palmas y Guitarra",
+  "genre": "Rumba",
+  "genre_ko": "룸바 플라멩카",
+  "bpm": 120,
+  "style": "spanish rumba flamenca, flamenco nylon guitars with fast rumba strumming, palmas handclaps, cajón, bass, 120 bpm, passionate female lead vocal, group chorus with jaleo shouts, zumba dance fitness, festive latin party, bright modern mix, studio recording",
+  "exclude": "live, live recording, concert, crowd noise, audience, applause, lo-fi",
+  "lyrics": "[Intro]\n¡Olé! ¡Olé!\n¡Que suenen las palmas!\n\n[Verse 1]\nRasguea la guitarra, se llena la plaza\nLas palmas responden, la noche se abraza\nVuelan los volantes, taconea el suelo\nCon esta rumbita yo toco el cielo\n\n[Pre-Chorus]\n¡Arsa! ¡Arsa!\nQue la rumba ya se alza\n\n[Chorus]\n¡Palmas y guitarra, alegría y calor!\nBaila la rumba con todo el corazón\n¡Palmas y guitarra, nadie se va!\nQue esta rumba nunca se acabará\n\n[Verse 2]\nManos al aire como una flor\nEl cajón retumba, sube el calor\nGira la falda, brillan los ojos\nToda la plaza se viste de rojo\n\n[Pre-Chorus]\n¡Arsa! ¡Arsa!\nQue la rumba ya se alza\n\n[Chorus]\n¡Palmas y guitarra, alegría y calor!\nBaila la rumba con todo el corazón\n¡Palmas y guitarra, nadie se va!\nQue esta rumba nunca se acabará\n\n[Break]\n¡Palmas! ¡Palmas!\n¡Más rápido!\n¡Olé!\n\n[Final Chorus]\n¡Palmas y guitarra, alegría y calor!\nBaila la rumba con todo el corazón\n¡Palmas y guitarra, nadie se va!\nQue esta rumba nunca se acabará\n\n[Outro]\n¡Palmas y guitarra! ¡Olé!",
+  "mood_ko": "빨간 물방울 플라멩코 드레스 · 안달루시아 안뜰",
+  "v": {
+   "h": "waist",
+   "dancer": "A passionate Spanish dancer in her early 30s with her dark hair in a low bun with a red rose, wearing a red polka-dot flamenco-style dress with ruffled sleeves and a ruffled skirt",
+   "dance": "rumba flamenca",
+   "moves": "rhythmic rumba steps in place, hand claps on the beat, graceful turning wrists, proud shoulder rolls and quick swishes of the ruffled skirt, smiling",
+   "setting": "an Andalusian courtyard at night, white-washed walls covered with blue ceramic flower pots, a tiled fountain softly out of focus, warm lanterns and string lights",
+   "floor": "dark patterned ceramic tiles reflecting the lantern light",
+   "look": "Warm red, white and cobalt palette, golden lantern glow, passionate festive mood"
+  }
+ },
+ {
+  "key": "parranda_merengue",
+  "title": "Noche de Parranda",
+  "genre": "Merengue",
+  "genre_ko": "메렝게",
+  "bpm": 150,
+  "style": "festive christmas merengue, dominican, tambora, güira, accordion, saxophone riffs, jingle bells, 150 bpm, joyful female lead vocal, group chorus, call-and-response, zumba dance fitness, holiday latin party, bright modern mix, studio recording",
+  "exclude": "live, live recording, concert, crowd noise, audience, applause, lo-fi",
+  "lyrics": "[Intro]\n¡Eh! ¡Llegó diciembre!\n¡A parrandear!\n\n[Verse 1]\nSe prenden las luces, llegó la Navidad\nSuena la tambora por toda la ciudad\nToca la puerta, abre el vecino\nTodo el mundo baila por el camino\n\n[Pre-Chorus]\n¡Que no pare, que no pare!\nLa parranda sale a la calle\n\n[Chorus]\n¡Noche de parranda, noche de alegría!\nMerengue navideño hasta que sea de día\n¡Noche de parranda, nadie a dormir!\nEsta Nochebuena la quiero vivir\n\n[Verse 2]\nPasito pa'lante, pasito pa'trás\nLas estrellas brillan, brillan mucho más\nGiran las abuelas, saltan los niños\nEsta Navidad se baila con cariño\n\n[Pre-Chorus]\n¡Que no pare, que no pare!\nLa parranda sale a la calle\n\n[Chorus]\n¡Noche de parranda, noche de alegría!\nMerengue navideño hasta que sea de día\n¡Noche de parranda, nadie a dormir!\nEsta Nochebuena la quiero vivir\n\n[Break]\n¡Arriba las manos!\n¡Que suene la güira!\n¡Todos a bailar!\n\n[Final Chorus]\n¡Noche de parranda, noche de alegría!\nMerengue navideño hasta que sea de día\n¡Noche de parranda, nadie a dormir!\nEsta Nochebuena la quiero vivir\n\n[Outro]\n¡Noche de parranda! ¡Eh!",
+  "mood_ko": "초록 벨벳 드레스 · 크리스마스 조명 거리",
+  "v": {
+   "h": "waist",
+   "dancer": "A joyful Latina dancer in her late 20s with long dark curly hair, wearing a deep emerald-green velvet dress with a flared skirt, a small red ribbon in her hair and gold earrings",
+   "dance": "fast Christmas merengue",
+   "moves": "quick rhythmic hip sways, tiny side-to-side marching steps, bouncing shoulders, then raises both arms and claps above her head to the beat, smiling at the camera",
+   "setting": "a Caribbean town street decorated for Christmas at night, colorful houses wrapped in twinkling string lights, glowing star lanterns overhead, a softly lit Christmas tree out of focus behind her",
+   "floor": "a dark street dusted with sparkling gold and red confetti",
+   "look": "Festive red, green and gold palette, warm bokeh lights, cheerful holiday mood"
+  }
+ },
+ {
+  "key": "diciembre_pop",
+  "title": "Brilla Diciembre",
+  "genre": "Latin Pop",
+  "genre_ko": "라틴 팝",
+  "bpm": 122,
+  "style": "latin dance pop, four-on-the-floor kick with latin percussion, congas, nylon guitar, bright synths, 122 bpm, uplifting female lead vocal, big singalong chorus, zumba dance fitness, new year party, bright modern mix, studio recording",
+  "exclude": "live, live recording, concert, crowd noise, audience, applause, lo-fi",
+  "lyrics": "[Intro]\n¡Oh, oh, oh!\n¡Brilla, diciembre!\n\n[Verse 1]\nSe encienden las calles con mil colores\nLa ciudad se llena de luces y amores\nLo que fue difícil se queda atrás\nEsta noche, mi gente, se baila más\n\n[Pre-Chorus]\nArriba las manos, arriba el corazón\nQue viene, que viene la mejor canción\n\n[Chorus]\n¡Brilla, diciembre, brilla sin parar!\nTodo el mundo junto a celebrar\n¡Brilla, diciembre, sube la luz!\nQue en esta fiesta brillas tú\n\n[Verse 2]\nSalto con la izquierda, salto con la derecha\nCada sonrisa es una estrella\nAbraza a tu gente, canta más fuerte\nQue este nuevo año traiga buena suerte\n\n[Pre-Chorus]\nArriba las manos, arriba el corazón\nQue viene, que viene la mejor canción\n\n[Chorus]\n¡Brilla, diciembre, brilla sin parar!\nTodo el mundo junto a celebrar\n¡Brilla, diciembre, sube la luz!\nQue en esta fiesta brillas tú\n\n[Break]\n¡Manos arriba!\n¡Ahora salta!\n¡Todos juntos!\n\n[Final Chorus]\n¡Brilla, diciembre, brilla sin parar!\nTodo el mundo junto a celebrar\n¡Brilla, diciembre, sube la luz!\nQue en esta fiesta brillas tú\n\n[Outro]\n¡Brilla, diciembre! ¡Oh, oh!",
+  "mood_ko": "은빛 스팽글 미니 드레스 · 불꽃놀이 옥상 파티",
+  "v": {
+   "h": "waist",
+   "dancer": "A radiant Latina dancer in her mid 20s with sleek long dark hair, wearing a shimmering silver sequin mini dress and silver hoop earrings",
+   "dance": "upbeat latin pop",
+   "moves": "bouncy step-touch moves, hip rolls, hair flips, arms waving side to side overhead and a happy jump on the beat",
+   "setting": "a city rooftop party on New Year's Eve night, golden fireworks bursting in the dark sky behind her, strings of warm fairy lights, glowing gold and silver balloons softly out of focus",
+   "floor": "a dark glossy rooftop deck sprinkled with silver confetti reflecting the fireworks",
+   "look": "Sparkling silver, gold and midnight-blue palette, glittering highlights, euphoric celebration mood"
+  }
+ },
+ {
+  "key": "anonovo_samba",
+  "title": "Ano Novo na Avenida",
+  "genre": "Samba",
+  "genre_ko": "삼바",
+  "bpm": 115,
+  "style": "festive samba batucada, brazilian new year party, surdo, repinique, tamborim, pandeiro, cavaquinho, apito whistle, 115 bpm, joyful female lead vocal in portuguese, group chorus, zumba dance fitness, bright modern mix, studio recording",
+  "exclude": "live, live recording, concert, crowd noise, audience, applause, lo-fi",
+  "lyrics": "[Intro]\nOlê, olá!\nFeliz Ano Novo, vem sambar!\n\n[Verse 1]\nA meia-noite chegou na avenida\nO céu se acende, a gente se anima\nRoupa branca, pé descalço na areia\nO mar nos chama, a lua clareia\n\n[Pre-Chorus]\nPula sete ondas, faz um pedido\nO ano novo vem colorido\n\n[Chorus]\nAno novo na avenida, batucada e emoção!\nSamba no pé, alegria na multidão\nAno novo na avenida, deixa o corpo levar\nO surdo bate forte, vem comemorar\n\n[Verse 2]\nFogos no céu, brilho no olhar\nAbraço apertado, vamos brindar\nMexe a cintura, levanta a mão\nNeste ano novo, só festa e paixão\n\n[Pre-Chorus]\nPula sete ondas, faz um pedido\nO ano novo vem colorido\n\n[Chorus]\nAno novo na avenida, batucada e emoção!\nSamba no pé, alegria na multidão\nAno novo na avenida, deixa o corpo levar\nO surdo bate forte, vem comemorar\n\n[Break]\nDez, nove, oito...\nTrês, dois, um!\nFeliz Ano Novo!\n\n[Final Chorus]\nAno novo na avenida, batucada e emoção!\nSamba no pé, alegria na multidão\nAno novo na avenida, deixa o corpo levar\nO surdo bate forte, vem comemorar\n\n[Outro]\nOlê, olá! Ano novo, vem sambar!",
+  "mood_ko": "흰 프린지 의상 · 불꽃놀이 해변 새해 축제",
+  "v": {
+   "h": "waist",
+   "dancer": "A radiant Brazilian samba dancer in her late 20s with voluminous curly hair and a white flower crown, wearing a white sequined fringe top and a matching white fringe skirt",
+   "dance": "samba no pé",
+   "moves": "fast samba footwork in place, rapid hip shakes that make the fringe swing, arms opening wide and waving overhead, a huge joyful smile",
+   "setting": "a Brazilian beach on New Year's Eve at midnight, colorful fireworks bursting over the dark ocean, white candles and flowers in the sand, glowing beach kiosks softly out of focus",
+   "floor": "dark moonlit sand scattered with white flower petals",
+   "look": "Sparkling white, gold and ocean-blue palette with bursts of firework color, euphoric celebration mood"
+  },
+  "language": "pt"
+ }
+]
