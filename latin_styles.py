@@ -159,11 +159,12 @@ STYLES = [
 ]
 
 VOCALS = [
-    "energetic male lead vocal with crowd chants",
-    "powerful female lead vocal with call-and-response chorus",
-    "male & female duet",
-    "group chant vocals (coro), shout-outs like 'vamos!'",
-    "mostly instrumental with short vocal hooks",
+    # 관중·떼창 느낌이 나지 않도록 솔로 보컬만 쓴다 (crowd chants / coro / shout-outs 제외)
+    "energetic solo male lead vocal, no backing choir",
+    "powerful solo female lead vocal, no backing choir",
+    "male & female duet, studio recording",
+    "warm intimate solo vocal, clean studio recording",
+    "mostly instrumental with short solo vocal hooks",
 ]
 
 MOODS = [
@@ -182,8 +183,9 @@ THEMES = [
 # 줌바 수업용 곡 구조 (짧고 반복적인 훅, 동작 전환이 쉬운 8카운트 단위)
 STRUCTURE = (
     "Intro (8 counts x4) → Verse → Pre-Chorus build → Big Chorus with simple chant hook → "
-    "Percussion break → Verse 2 → Chorus → Breakdown (clap along) → Final Chorus → Outro. "
-    "Clear 8-count phrasing, steady tempo, no tempo changes, 3-4 minutes."
+    "Percussion break → Verse 2 → Chorus → Instrumental breakdown → Final Chorus → Outro. "
+    "Clear 8-count phrasing, steady tempo, no tempo changes, 3-4 minutes. "
+    "Studio recording only: no crowd, no audience, no applause, no shout-outs."
 )
 
 VISUAL_PATTERNS = ["grid", "tunnel", "plasma"]

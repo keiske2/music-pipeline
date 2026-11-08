@@ -1,0 +1,162 @@
+[
+ {
+  "key": "noche_salsa",
+  "title": "Noche de Salsa",
+  "genre": "Salsa",
+  "genre_ko": "살사",
+  "bpm": 185,
+  "style": "salsa dura, piano montuno, brass section, trumpets and trombones, congas, timbales, bongos, clave, 185 bpm, powerful female lead vocal, zumba dance fitness, solo vocal, no choir, closed studio session, clean dry mix",
+  "lyrics": "[Instrumental Intro]\n\n[Verse 1]\nSe apaga la ciudad y se enciende el piano\nLa luna en la ventana me toma de la mano\nLas congas me hablan bajito al oído\nEsta noche mi cuerpo no conoce el olvido\n\n[Pre-Chorus]\nUno, dos, tres, y cinco, seis, siete\nLa clave me llama, el alma se mete\n\n[Chorus]\nNoche de salsa, noche de sabor\nBailo con la luna, bailo con mi amor\nNoche de salsa, no quiero parar\nMientras suene el timbal, voy a bailar\n\n[Verse 2]\nUna vuelta a la izquierda, una vuelta en el aire\nEl trombón me provoca, no hay nada que me pare\nSudor en la frente, fuego en la mirada\nHasta que el sol despierte en la madrugada\n\n[Pre-Chorus]\nUno, dos, tres, y cinco, seis, siete\nLa clave me llama, el alma se mete\n\n[Chorus]\nNoche de salsa, noche de sabor\nBailo con la luna, bailo con mi amor\nNoche de salsa, no quiero parar\nMientras suene el timbal, voy a bailar\n\n[Instrumental Break]\n\n[Bridge]\nDespacio, despacio, siente la clave\nRápido, rápido, el corazón lo sabe\n\n[Final Chorus]\nNoche de salsa, noche de sabor\nBailo con la luna, bailo con mi amor\nNoche de salsa, no quiero parar\nMientras suene el timbal, voy a bailar\n\n[Outro]\nNoche de salsa, hasta el amanecer",
+  "mood_ko": "에메랄드 드레스 · 텅 빈 루프탑",
+  "v": {
+   "h": "waist",
+   "dancer": "A confident Latina dancer in her late 20s with a sleek high ponytail, wearing a fitted emerald-green fringe dress and gold heels",
+   "dance": "fast salsa",
+   "moves": "quick basic steps on the beat, sharp single spins, shoulder shimmies and flicks of the fringe, arms opening wide on the turns",
+   "setting": "an empty city rooftop at night with strings of warm bulb lights and a hazy skyline glowing far behind her, nobody else present",
+   "floor": "dark wet concrete reflecting the warm lights",
+   "look": "Rich warm amber and emerald tones, soft golden rim light, shallow depth of field"
+  },
+  "exclude": "live, live recording, concert, crowd, crowd noise, audience, applause, cheering, shouting, gang vocals, party ambience, chatter, stadium, lo-fi"
+ },
+ {
+  "key": "tango_medianoche",
+  "title": "Tango de Medianoche",
+  "genre": "Tango",
+  "genre_ko": "탱고",
+  "bpm": 124,
+  "style": "argentine tango, orquesta típica, bandoneón, violins, piano, double bass, staccato marcato rhythm, 124 bpm, dramatic sultry female lead vocal in spanish, dance fitness, solo vocal, no choir, closed studio session, clean dry mix",
+  "lyrics": "[Instrumental Intro]\n\n[Verse 1]\nMedianoche en San Telmo, la calle está vacía\nUn bandoneón respira la vieja melodía\nTus pasos en la piedra, mi sombra en el farol\nBailamos sin testigos, sin luna y sin sol\n\n[Pre-Chorus]\nOcho adelante, ocho hacia atrás\nUn abrazo cerrado y no hay nada más\n\n[Chorus]\nTango de medianoche, tango de los dos\nUn paso, un suspiro, una sola voz\nTango de medianoche, no me sueltes más\nQue el reloj se detenga en este compás\n\n[Verse 2]\nTu mano en mi espalda, tu pulso en mi pulso\nCada pausa nos quema, cada giro es impulso\nEl violín llora lento, el piano responde\nY en un giro perfecto la noche se esconde\n\n[Pre-Chorus]\nOcho adelante, ocho hacia atrás\nUn abrazo cerrado y no hay nada más\n\n[Chorus]\nTango de medianoche, tango de los dos\nUn paso, un suspiro, una sola voz\nTango de medianoche, no me sueltes más\nQue el reloj se detenga en este compás\n\n[Instrumental Break]\n\n[Bridge]\nQuebrada y boleo, la noche es nuestra\nNadie nos mira, solo la orquesta\n\n[Final Chorus]\nTango de medianoche, tango de los dos\nUn paso, un suspiro, una sola voz\nTango de medianoche, no me sueltes más\nQue el reloj se detenga en este compás\n\n[Outro]\nTango de medianoche, adiós",
+  "mood_ko": "검은 슬릿 드레스 · 빈 돌길 가로등",
+  "v": {
+   "h": "waist",
+   "dancer": "An elegant Argentine woman in her early 30s with dark hair in a low chignon and a red rose behind her ear, wearing a black satin slit dress and black tango heels",
+   "dance": "solo Argentine tango",
+   "moves": "slow sensual ochos, sharp leg boleos and ganchos in the air, dramatic pauses with her chin lifted, then a precise pivot back to face the camera",
+   "setting": "an empty cobblestone street corner in old Buenos Aires at midnight under a single iron street lamp, light fog, closed shutters, nobody else present",
+   "floor": "dark glistening cobblestones reflecting the lamp light",
+   "look": "Moody chiaroscuro lighting, deep blacks with crimson and warm sodium-yellow accents"
+  },
+  "exclude": "live, live recording, concert, crowd, crowd noise, audience, applause, cheering, shouting, gang vocals, party ambience, chatter, stadium, lo-fi"
+ },
+ {
+  "key": "te_bailo_despacio",
+  "title": "Te Bailo Despacio",
+  "genre": "Salsa Romántica",
+  "genre_ko": "살사 로만티카",
+  "bpm": 175,
+  "style": "salsa romántica, smooth romantic salsa, piano montuno, soft trombones and trumpets, congas, bongos, güiro, warm bass, 175 bpm, tender female lead vocal, zumba dance fitness, solo vocal, no choir, closed studio session, clean dry mix",
+  "lyrics": "[Instrumental Intro]\n\n[Verse 1]\nLlegaste sin aviso, como lluvia en verano\nY desde ese momento no suelto tu mano\nLas teclas del piano me cuentan tu nombre\nY en cada trompeta tu risa se esconde\n\n[Pre-Chorus]\nAcércate, acércate más\nQue esta canción no termina jamás\n\n[Chorus]\nTe bailo despacio, te bailo con el alma\nUn paso pa'lante, un paso con calma\nTe bailo despacio, mi cielo, mi sol\nQue el mundo se pare, que suene el bongó\n\n[Verse 2]\nTu falda que gira, mi pecho que late\nNo hay nada en la vida que a esto le gane\nSi el tiempo se apura, que espere un poquito\nQue en esta salsa te quiero infinito\n\n[Pre-Chorus]\nAcércate, acércate más\nQue esta canción no termina jamás\n\n[Chorus]\nTe bailo despacio, te bailo con el alma\nUn paso pa'lante, un paso con calma\nTe bailo despacio, mi cielo, mi sol\nQue el mundo se pare, que suene el bongó\n\n[Instrumental Break]\n\n[Bridge]\nDespacito, despacito, tu mano en mi mano\nDespacito, despacito, bailando y soñando\n\n[Final Chorus]\nTe bailo despacio, te bailo con el alma\nUn paso pa'lante, un paso con calma\nTe bailo despacio, mi cielo, mi sol\nQue el mundo se pare, que suene el bongó\n\n[Outro]\nTe bailo despacio, para siempre",
+  "mood_ko": "로즈 새틴 드레스 · 촛불 거실",
+  "v": {
+   "h": "waist",
+   "dancer": "A soft-smiling Latina dancer in her late 20s with long wavy chestnut hair, wearing a rose-pink satin wrap dress and small pearl earrings",
+   "dance": "smooth romantic salsa",
+   "moves": "relaxed basic steps, slow gentle turns, swaying hips and graceful arm styling that floats through the air, looking at the camera with a warm smile",
+   "setting": "an empty candlelit living room with sheer curtains moving softly by an open window and a vintage piano in the background, nobody else present",
+   "floor": "dark polished wooden floorboards catching the candle glow",
+   "look": "Soft warm pastel pink and gold tones, dreamy bokeh from the candles"
+  },
+  "exclude": "live, live recording, concert, crowd, crowd noise, audience, applause, cheering, shouting, gang vocals, party ambience, chatter, stadium, lo-fi"
+ },
+ {
+  "key": "milonga_puerto",
+  "title": "Milonga del Puerto",
+  "genre": "Milonga",
+  "genre_ko": "밀롱가",
+  "bpm": 110,
+  "style": "argentine milonga, fast 2/4 habanera rhythm, bandoneón, guitar, piano, double bass, violin, 110 bpm, playful female lead vocal in spanish, dance fitness, solo vocal, no choir, closed studio session, clean dry mix",
+  "lyrics": "[Instrumental Intro]\n\n[Verse 1]\nSale el sol en La Boca, se pinta la vereda\nLa milonga me silba desde la escalera\nZapatos lustrados, sombrero de lado\nHoy bailo contento, hoy bailo apurado\n\n[Pre-Chorus]\nTraspié y traspié, cortito y ligero\nLa milonga me lleva por todo el puerto\n\n[Chorus]\nMilonga del puerto, milonga alegre\nDos por cuatro y el alma se enciende\nMilonga del puerto, cántame otra vez\nQue bailo en la orilla con el viento a mis pies\n\n[Verse 2]\nLos barcos se mecen al ritmo del bajo\nLa guitarra se ríe, se acaba el trabajo\nUn paso cruzado, un giro travieso\nY el río de plata me roba un beso\n\n[Pre-Chorus]\nTraspié y traspié, cortito y ligero\nLa milonga me lleva por todo el puerto\n\n[Chorus]\nMilonga del puerto, milonga alegre\nDos por cuatro y el alma se enciende\nMilonga del puerto, cántame otra vez\nQue bailo en la orilla con el viento a mis pies\n\n[Instrumental Break]\n\n[Bridge]\nRápido, rápido, el pie no se cansa\nLento, lento, el puerto descansa\n\n[Final Chorus]\nMilonga del puerto, milonga alegre\nDos por cuatro y el alma se enciende\nMilonga del puerto, cántame otra vez\nQue bailo en la orilla con el viento a mis pies\n\n[Outro]\nMilonga del puerto, hasta mañana",
+  "mood_ko": "스트라이프 셔츠·페도라 · 알록달록 항구",
+  "v": {
+   "h": "waist",
+   "dancer": "A playful Argentine dancer in her late 20s with a short dark bob, wearing a tilted black fedora, a striped blue-and-white shirt, high-waisted black trousers and two-tone dance shoes",
+   "dance": "quick Argentine milonga",
+   "moves": "fast rhythmic traspié double-steps, little side-to-side rocking, quick crossed steps and a playful tip of the hat to the camera",
+   "setting": "an empty sunny harbor street in La Boca with brightly painted corrugated-metal houses in yellow, blue and red behind her, nobody else present",
+   "floor": "worn dark wooden dock planks",
+   "look": "Bright saturated colors, crisp morning sunlight with soft shadows"
+  },
+  "exclude": "live, live recording, concert, crowd, crowd noise, audience, applause, cheering, shouting, gang vocals, party ambience, chatter, stadium, lo-fi"
+ },
+ {
+  "key": "buenos_aires_electrico",
+  "title": "Buenos Aires Eléctrico",
+  "genre": "Electrotango",
+  "genre_ko": "일렉트로 탱고",
+  "bpm": 118,
+  "style": "electrotango, electronic tango, bandoneón, violin, piano, steady four-on-the-floor kick, deep synth bass, glossy electronic beats, 118 bpm, smoky female lead vocal, dance fitness, solo vocal, no choir, closed studio session, clean dry mix",
+  "lyrics": "[Instrumental Intro]\n\n[Verse 1]\nLuces de neón sobre la avenida\nUn bandoneón con pulso de vida\nEl bajo golpea, la noche despierta\nY el tango del futuro me abre la puerta\n\n[Pre-Chorus]\nOcho cruzado, un giro en el aire\nLa ciudad late fuerte y no espera a nadie\n\n[Chorus]\nBuenos Aires eléctrico, corazón de metal\nBandoneón y sintetizador, un tango digital\nBuenos Aires eléctrico, no me dejes caer\nBailo entre los cables hasta el amanecer\n\n[Verse 2]\nTacones de acero sobre el asfalto\nCada paso que doy me lleva más alto\nLa lluvia en la pista refleja mi sombra\nY el ritmo me nombra, y el ritmo me nombra\n\n[Pre-Chorus]\nOcho cruzado, un giro en el aire\nLa ciudad late fuerte y no espera a nadie\n\n[Chorus]\nBuenos Aires eléctrico, corazón de metal\nBandoneón y sintetizador, un tango digital\nBuenos Aires eléctrico, no me dejes caer\nBailo entre los cables hasta el amanecer\n\n[Instrumental Drop]\n\n[Bridge]\nRespira, gira\nRespira, gira\nTango, tango eléctrico\n\n[Final Chorus]\nBuenos Aires eléctrico, corazón de metal\nBandoneón y sintetizador, un tango digital\nBuenos Aires eléctrico, no me dejes caer\nBailo entre los cables hasta el amanecer\n\n[Outro]\nBuenos Aires eléctrico",
+  "mood_ko": "메탈릭 은색 드레스 · 네온 빈 스튜디오",
+  "v": {
+   "h": "waist",
+   "dancer": "A striking dancer in her late 20s with a sharp black bob and silver eyeliner, wearing a metallic silver asymmetrical dress and black heels",
+   "dance": "modern solo electrotango",
+   "moves": "crisp ochos on the kick drum, sharp leg flicks, sudden freezes and robotic head turns, then a smooth spin back to center",
+   "setting": "an empty dark industrial studio with vertical cyan and violet neon tubes and thin cables hanging from the ceiling, light haze, nobody else present",
+   "floor": "black glossy floor reflecting the neon tubes",
+   "look": "Cool cyan and violet neon palette with magenta highlights, high contrast"
+  },
+  "exclude": "live, live recording, concert, crowd, crowd noise, audience, applause, cheering, shouting, gang vocals, party ambience, chatter, stadium, lo-fi"
+ },
+ {
+  "key": "son_de_santiago",
+  "title": "Son de Santiago",
+  "genre": "Son Cubano",
+  "genre_ko": "손 쿠바노",
+  "bpm": 112,
+  "style": "son cubano, tres cubano guitar, acoustic guitar, bongos, maracas, claves, upright bass, muted trumpet, 112 bpm, warm male lead vocal, latin dance fitness, solo vocal, no choir, closed studio session, clean dry mix",
+  "lyrics": "[Instrumental Intro]\n\n[Verse 1]\nEn las calles de Santiago se despierta el tres\nLa guitarra me sonríe, me levanto de una vez\nEl bongó va caminando, la clave marca el compás\nY mi cuerpo se acomoda, no lo puedo evitar más\n\n[Pre-Chorus]\nAy, qué sabroso está\nEste son que me llama y no me deja en paz\n\n[Chorus]\nSon de Santiago, son de mi tierra\nSuena en la loma, suena en la sierra\nSon de Santiago, dulce y caliente\nSe mueve en mis pies, se queda en mi mente\n\n[Verse 2]\nUna taza de café, la mañana en el balcón\nLa trompeta con sordina me susurra una canción\nDos pasitos pa' un lado, dos pasitos para acá\nEl son no tiene prisa, el son sabe esperar\n\n[Pre-Chorus]\nAy, qué sabroso está\nEste son que me llama y no me deja en paz\n\n[Chorus]\nSon de Santiago, son de mi tierra\nSuena en la loma, suena en la sierra\nSon de Santiago, dulce y caliente\nSe mueve en mis pies, se queda en mi mente\n\n[Instrumental Break]\n\n[Bridge]\nPa' un lado, pa'l otro lado\nEste son me tiene enamorado\n\n[Final Chorus]\nSon de Santiago, son de mi tierra\nSuena en la loma, suena en la sierra\nSon de Santiago, dulce y caliente\nSe mueve en mis pies, se queda en mi mente\n\n[Outro]\nSon de Santiago, de mi tierra",
+  "mood_ko": "노란 원피스 · 빈 콜로니얼 안뜰",
+  "v": {
+   "h": "waist",
+   "dancer": "A cheerful Cuban dancer in her late 20s with natural curly hair tied with a bright yellow scarf, wearing a sunny yellow cotton dress with a full skirt and simple sandals",
+   "dance": "relaxed Cuban son",
+   "moves": "easy side-to-side steps with soft hip movement, small turns that make the skirt swirl, shoulders gently bouncing and hands lightly playing with the skirt",
+   "setting": "an empty sunlit colonial courtyard in Santiago de Cuba with pastel turquoise walls, wooden shutters, potted palms and a hanging birdcage, nobody else present",
+   "floor": "dark terracotta tiles with soft shadows",
+   "look": "Warm late-afternoon sunlight, golden and turquoise tones, gentle film grain"
+  },
+  "exclude": "live, live recording, concert, crowd, crowd noise, audience, applause, cheering, shouting, gang vocals, party ambience, chatter, stadium, lo-fi"
+ },
+ {
+  "key": "sal_y_salsa",
+  "title": "Sal y Salsa",
+  "genre": "Salsa",
+  "genre_ko": "살사",
+  "bpm": 190,
+  "style": "modern new york salsa, piano montuno, brass section, trombones, congas, timbales, cowbell, 190 bpm, bright female lead vocal, zumba dance fitness, solo vocal, no choir, closed studio session, clean dry mix",
+  "lyrics": "[Instrumental Intro]\n\n[Verse 1]\nBrisa de la costa, sal sobre la piel\nEl piano me invita, me invita a volver\nLas olas van en clave, el viento en el timbal\nY el mar con su ritmo me enseña a bailar\n\n[Pre-Chorus]\nCinco, seis, siete, ocho\nGira la falda, se pinta el ocaso\n\n[Chorus]\nSal y salsa, arena y sabor\nTengo el Caribe dentro del corazón\nSal y salsa, sol y tambor\nBailo en la orilla hasta que salga el sol\n\n[Verse 2]\nDescalza en la arena, la conga me sigue\nLa luna temprana me pide que siga\nNo hay nadie en la playa, la noche es mía\nY cada trompeta me pinta alegría\n\n[Pre-Chorus]\nCinco, seis, siete, ocho\nGira la falda, se pinta el ocaso\n\n[Chorus]\nSal y salsa, arena y sabor\nTengo el Caribe dentro del corazón\nSal y salsa, sol y tambor\nBailo en la orilla hasta que salga el sol\n\n[Instrumental Break]\n\n[Bridge]\nMueve, mueve, como la marea\nSube y baja, que el mar te vea\n\n[Final Chorus]\nSal y salsa, arena y sabor\nTengo el Caribe dentro del corazón\nSal y salsa, sol y tambor\nBailo en la orilla hasta que salga el sol\n\n[Outro]\nSal y salsa, Caribe en el corazón",
+  "mood_ko": "코랄 랩스커트 · 노을 빈 해변",
+  "v": {
+   "h": "waist",
+   "dancer": "A sun-kissed Latina dancer in her mid 20s with long beach-wavy dark hair, wearing a coral wrap skirt, a white cropped top and shell anklets, dancing barefoot",
+   "dance": "fast salsa",
+   "moves": "quick salsa basics, rapid double spins that flare the skirt, hip rolls and arms sweeping like waves",
+   "setting": "an empty tropical beach at sunset with gentle waves rolling in behind her and palm silhouettes against an orange-pink sky, nobody else present",
+   "floor": "dark wet sand reflecting the sunset",
+   "look": "Glowing sunset orange, coral and magenta tones, warm backlight"
+  },
+  "exclude": "live, live recording, concert, crowd, crowd noise, audience, applause, cheering, shouting, gang vocals, party ambience, chatter, stadium, lo-fi"
+ },
+ {
+  "key": "tango_lluvia",
+  "title": "Tango bajo la Lluvia",
+  "genre": "Tango Nuevo",
+  "genre_ko": "탱고 누에보",
+  "bpm": 100,
+  "style": "tango nuevo, modern argentine tango, bandoneón, violin, piano, double bass, subtle electric guitar accents, dramatic dynamics, 100 bpm, passionate female lead vocal in spanish, dance fitness, solo vocal, no choir, closed studio session, clean dry mix",
+  "lyrics": "[Instrumental Intro]\n\n[Verse 1]\nLlueve sobre Corrientes, se borran los carteles\nMi paraguas olvidado, mis zapatos fieles\nUn violín en la esquina dibuja tu ausencia\nY bailo con la lluvia, bailo con paciencia\n\n[Pre-Chorus]\nPausa, y respiro\nGancho, y suspiro\n\n[Chorus]\nTango bajo la lluvia, tango sin final\nCada gota es un paso, cada paso un cristal\nTango bajo la lluvia, lávame el dolor\nQue en este dos por cuatro renace el amor\n\n[Verse 2]\nLos charcos son espejos de un cielo de plomo\nMis pasos dibujan tu nombre, no sé cómo\nEl bandoneón me abraza con su respiración\nY la ciudad entera se vuelve canción\n\n[Pre-Chorus]\nPausa, y respiro\nGancho, y suspiro\n\n[Chorus]\nTango bajo la lluvia, tango sin final\nCada gota es un paso, cada paso un cristal\nTango bajo la lluvia, lávame el dolor\nQue en este dos por cuatro renace el amor\n\n[Instrumental Break]\n\n[Bridge]\nQue llueva, que llueva\nQue el tango se lleve\nLa pena que queda\n\n[Final Chorus]\nTango bajo la lluvia, tango sin final\nCada gota es un paso, cada paso un cristal\nTango bajo la lluvia, lávame el dolor\nQue en este dos por cuatro renace el amor\n\n[Outro]\nTango bajo la lluvia",
+  "mood_ko": "버건디 벨벳 드레스 · 비 내리는 빈 광장",
+  "v": {
+   "h": "waist",
+   "dancer": "A graceful dancer in her early 30s with long straight black hair slicked back by the rain, wearing a deep burgundy velvet dress with a high slit and black tango heels",
+   "dance": "dramatic solo tango",
+   "moves": "long slow walking steps forward and back in place, sweeping leg arcs through the rain, sharp boleos, a slow pivot with arms extended and her face lifted to the rain",
+   "setting": "an empty plaza at night in steady rain, an old wrought-iron street lamp and blurred city lights behind her, raindrops glittering in the lamp light, nobody else present",
+   "floor": "dark rain-soaked pavement with puddles mirroring the lamp",
+   "look": "Cool blue-grey night tones with warm burgundy and amber highlights, cinematic rain"
+  },
+  "exclude": "live, live recording, concert, crowd, crowd noise, audience, applause, cheering, shouting, gang vocals, party ambience, chatter, stadium, lo-fi"
+ }
+]
