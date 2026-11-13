@@ -166,7 +166,12 @@ def main():
     parser.add_argument("--video", default="", help="배경으로 쓸 드라이브 영상 이름 일부 (비우면 곡 이름과 같은 영상, 없으면 테크노 영상)")
     args = parser.parse_args()
 
-    songs = [s for s in drive_fetch.list_songs() if args.name in s["name"]]
+    # 띄어쓰기·밑줄·악센트가 달라도 찾도록 (Corazón de Salsa.mp3 ↔ Corazon_de_Salsa)
+    def norm(t: str) -> str:
+        t = unicodedata.normalize("NFKD", t).encode("ascii", "ignore").decode().lower()
+        return re.sub(r"[^a-z0-9]", "", t)
+
+    songs = [s for s in drive_fetch.list_songs() if norm(args.name) in norm(s["name"])]
     if not songs:
         raise RuntimeError(f"드라이브 Suno 폴더에서 '{args.name}' 곡을 찾지 못함")
     song = songs[0]
