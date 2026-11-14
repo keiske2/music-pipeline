@@ -45,6 +45,8 @@ def plain_lyrics(lyrics: str) -> str:
 
 
 def make_meta(s: dict) -> dict:
+    if "channel" in s:   # 라틴 댄스가 아닌 곡(예: 블루스)은 곡 데이터의 제목 꼬리·해시태그·설명을 쓴다
+        return make_custom_meta(s)
     tag = re.sub(r"[^A-Za-z]", "", unicodedata.normalize("NFKD", s["genre"]).encode("ascii", "ignore").decode())
     lyrics = plain_lyrics(s["lyrics"])
     description = (
@@ -63,6 +65,25 @@ def make_meta(s: dict) -> dict:
         "lyrics": lyrics,
         "bpm": s["bpm"],
         "language": s.get("language", "es"),   # 가사 받아쓰기 언어 (삼바는 pt)
+    }
+
+
+def make_custom_meta(s: dict) -> dict:
+    c = s["channel"]
+    lyrics = plain_lyrics(s["lyrics"])
+    description = (
+        f"{c['hashtags_top']}\n{s['title']} – {c['blurb']}\n\n"
+        "🎧 Music created with Suno AI\n\n"
+        f"🎤 Lyrics\n{lyrics}\n\n{c['hashtags_bottom']}"
+    )
+    return {
+        "title": f"{s['title']} | {c['title_suffix']}"[:100],
+        "description": description[:5000],
+        "tags": c["tags"] + [s["title"].lower()],
+        "categoryId": "10",
+        "lyrics": lyrics,
+        "bpm": s["bpm"],
+        "language": s.get("language", "en"),
     }
 
 
