@@ -115,27 +115,31 @@ def photo_frame(src: Path, out: Path) -> Path:
     return out
 
 
-def photo_clip(m: dict, out: Path, i: int) -> float:
+def photo_clip(m: dict, out: Path, i: int, sec: float = PHOTO_SEC) -> float:
     img = photo_frame(m["path"], out.with_suffix(".jpg"))
-    frames = int(PHOTO_SEC * FPS)
+    frames = int(sec * FPS)
     zoom_in = i % 2 == 0   # 번갈아 확대/축소
     z = "min(1+0.0009*on,1.12)" if zoom_in else f"max(1.12-0.0009*on,1)"
     run(["ffmpeg", "-y", "-loglevel", "error", "-loop", "1", "-i", str(img),
          "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
          "-filter_complex",
          f"[0:v]zoompan=z='{z}':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d={frames}:s={W}x{H}:fps={FPS},"
-         f"fade=in:d=0.4,fade=out:st={PHOTO_SEC - 0.4}:d=0.4,setsar=1[v]",
-         "-map", "[v]", "-map", "1:a", "-t", f"{PHOTO_SEC}", *ENC, str(out)])
-    return PHOTO_SEC
+         f"fade=in:d=0.4,fade=out:st={sec - 0.4:.2f}:d=0.4,setsar=1[v]",
+         "-map", "[v]", "-map", "1:a", "-t", f"{sec:.2f}", *ENC, str(out)])
+    return sec
 
 
-def video_clip(m: dict, out: Path) -> float:
+def usable_len(m: dict) -> float:
+    return float(probe(m["path"])["format"].get("duration", 0)) - 2 * TRIM
+
+
+def video_clip(m: dict, out: Path, dur: float | None = None) -> float:
     info = probe(m["path"])
     length = float(info["format"].get("duration", 0))
     usable = length - 2 * TRIM
     if usable < 1.5:
         return 0.0
-    dur = min(usable, MAX_CLIP)
+    dur = min(usable, dur or MAX_CLIP)
     start = TRIM + (usable - dur) / 2           # 가운데 구간
     has_audio = any(s["codec_type"] == "audio" for s in info["streams"])
     vf = (f"[0:v]scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},boxblur=20:4[bg];"
@@ -150,6 +154,27 @@ def video_clip(m: dict, out: Path) -> float:
     run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{start:.2f}", "-t", f"{dur:.2f}", "-i", str(m["path"]),
          *inputs, "-filter_complex", vf + af, "-map", "[v]", "-map", amap, "-t", f"{dur:.2f}", *ENC, str(out)])
     return dur
+
+
+def plan_durations(media: list, target: float) -> list:
+    """조각마다 쓸 길이. 전체가 target(배경음악 길이)에 맞도록 늘리거나 줄인다.
+    영상은 실제 길이·MAX_CLIP을, 사진은 2.5~8초를 넘지 않는다."""
+    lo = {"video": 2.0, "photo": 2.5}
+    hi = [min(usable_len(m), MAX_CLIP) if m["kind"] == "video" else 8.0 for m in media]
+    base = [min(h, MAX_CLIP if m["kind"] == "video" else PHOTO_SEC) for m, h in zip(media, hi)]
+    durs = base[:]
+    for _ in range(6):   # 상한·하한에 걸린 조각을 빼고 나머지로 다시 나눠 맞춤
+        total = sum(durs)
+        if abs(total - target) < 0.5:
+            break
+        free = [i for i, d in enumerate(durs)
+                if (total < target and d < hi[i] - 0.01) or (total > target and d > lo[media[i]["kind"]] + 0.01)]
+        if not free:
+            break
+        f = (target - (total - sum(durs[i] for i in free))) / sum(durs[i] for i in free)
+        for i in free:
+            durs[i] = max(lo[media[i]["kind"]], min(hi[i], durs[i] * f))
+    return durs
 
 
 # ── 자막 ───────────────────────────────────────────────────────────────────────
@@ -234,15 +259,32 @@ def cmd_build(name: str, privacy: str, title: str, upload: bool, lyrics_hint: st
         m["time"] = shot_time(m)
     media.sort(key=lambda m: (m["time"], m["name"]))
 
+    # 편집 계획: travel/captions/<폴더>.json  {"order": [파일이름…], "captions": {파일이름: 글}}
+    # (예전 형식 {파일이름: 글} 도 읽음). order에 없는 파일은 촬영 시간순으로 뒤에 붙인다.
     cap_file = ROOT / "travel" / "captions" / f"{folder}.json"
-    cap_map = json.loads(cap_file.read_text(encoding="utf-8")) if cap_file.exists() else {}
+    plan = json.loads(cap_file.read_text(encoding="utf-8")) if cap_file.exists() else {}
+    if "order" not in plan and "captions" not in plan:
+        plan = {"captions": plan}
+    cap_map = plan.get("captions", {})
+    rank = {n: i for i, n in enumerate(plan.get("order", []))}
+    skip = set(plan.get("skip", []))
+    media = [m for m in media if m["name"] not in skip]
+    media.sort(key=lambda m: (rank.get(m["name"], len(rank)), m["time"], m["name"]))
+
+    for m in media:
+        if m["kind"] == "video" and usable_len(m) < 1.5:
+            m["drop"] = True
+    media = [m for m in media if not m.get("drop")]
+    music_len = float(probe(bgm)["format"]["duration"])
+    durs = plan_durations(media, music_len)
+    print(f"배경음악 {music_len / 60:.1f}분에 맞춤 (조각 {len(media)}개)")
 
     parts, captions, t = [], [], 0.0
-    for i, m in enumerate(media):
+    for i, (m, want) in enumerate(zip(media, durs)):
         out = work / "parts" / f"{i:04d}.mp4"
         out.parent.mkdir(parents=True, exist_ok=True)
         try:
-            dur = video_clip(m, out) if m["kind"] == "video" else photo_clip(m, out, i)
+            dur = video_clip(m, out, want) if m["kind"] == "video" else photo_clip(m, out, i, want)
         except RuntimeError as e:
             print(f"⚠️ 건너뜀 {m['name']}: {str(e)[:200]}")
             continue
