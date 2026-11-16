@@ -64,6 +64,23 @@ def find_video(name: str) -> dict:
     return files[0]
 
 
+def find_folder(name: str) -> dict:
+    """이름에 name이 들어간 폴더 1개 (최신순). 예: 'Iquique' → Chile/2026-11-16_Iquique"""
+    token = access_token()
+    safe = name.replace("'", "\\'")
+    folders = _query(token, f"name contains '{safe}' and mimeType = '{FOLDER_MIME}' and trashed = false")
+    if not folders:
+        raise RuntimeError(f"드라이브에서 '{name}' 폴더를 찾지 못함")
+    return folders[0]
+
+
+def list_children(folder_id: str) -> list:
+    """폴더 안의 파일(하위 폴더 제외)."""
+    token = access_token()
+    return [f for f in _query(token, f"'{folder_id}' in parents and trashed = false")
+            if f["mimeType"] != FOLDER_MIME]
+
+
 def download(file_id: str, dest: Path) -> Path:
     token = access_token()
     with requests.get(f"{API}/{file_id}", params={"alt": "media"},

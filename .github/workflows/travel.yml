@@ -1,0 +1,87 @@
+name: 여행 영상 만들기
+
+# 드라이브 Chile/<날짜>_<도시>/ 폴더의 영상·사진·bgm.mp3 → 편집 → 유튜브 업로드
+# mode=frames: 장면 분석용 대표 화면 모음을 travel-sheets 브랜치에 올림 (Claude가 보고 장면 설명 자막을 씀)
+# mode=build : 편집해서 업로드
+on:
+  workflow_dispatch:
+    inputs:
+      folder:
+        description: "드라이브 폴더 이름 일부 (예: Iquique)"
+        required: true
+      mode:
+        description: "frames = 장면 분석용 화면 모음, build = 편집·업로드"
+        type: choice
+        options: [build, frames]
+        default: build
+      privacy:
+        type: choice
+        options: [public, unlisted, private]
+        default: public
+      title:
+        description: "영상 제목 앞부분 (비우면 '<도시>, Chile')"
+        required: false
+        default: ""
+      lyrics:
+        description: "가사 힌트 파일 (예: travel/iquique.md, 비워도 됨)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: travel-${{ inputs.folder }}
+  cancel-in-progress: false
+
+jobs:
+  travel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 패키지 설치
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          pip install -q requests numpy pillow pillow-heif faster-whisper
+      - name: 실행
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          FOLDER: ${{ inputs.folder }}
+          MODE: ${{ inputs.mode }}
+          PRIVACY: ${{ inputs.privacy }}
+          TITLE: ${{ inputs.title }}
+          LYRICS: ${{ inputs.lyrics }}
+        run: |
+          if [ "$MODE" = "frames" ]; then
+            python travel_edit.py frames "$FOLDER"
+          else
+            ARGS=(build "$FOLDER" --privacy "$PRIVACY")
+            [ -n "$TITLE" ] && ARGS+=(--title "$TITLE")
+            [ -n "$LYRICS" ] && ARGS+=(--lyrics "$LYRICS")
+            python travel_edit.py "${ARGS[@]}"
+          fi
+      - name: 장면 화면 모음 올리기 (frames)
+        if: inputs.mode == 'frames'
+        run: |
+          cp -r sheets "$RUNNER_TEMP/sheets"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -q --orphan travel-sheets-new
+          git rm -rqf .
+          cp -r "$RUNNER_TEMP/sheets" sheets
+          git add sheets && git commit -qm "장면 화면 모음: ${{ inputs.folder }}"
+          git push -qf origin HEAD:travel-sheets
+      - name: 업로드 기록 저장 (build)
+        if: inputs.mode == 'build' && always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add travel_uploaded.json 2>/dev/null || true
+          git diff --cached --quiet || git commit -m "여행 영상 업로드 기록: ${{ inputs.folder }}"
+          git pull --rebase -q && git push -q
