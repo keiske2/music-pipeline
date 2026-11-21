@@ -32,7 +32,8 @@ ROOT = Path(__file__).parent
 W, H, FPS = 1920, 1080, 30
 MAX_CLIP = 20.0      # 영상 한 개에서 쓰는 최대 길이(초) — 긴 버전
 TRIM = 0.6           # 영상 앞뒤에서 버리는 길이(초)
-PHOTO_SEC = 4.0      # 사진 한 장 길이(초)
+PHOTO_SEC = 4.0      # 사진 한 장 기본 길이(초)
+PHOTO_MAX = 18.0     # 자료가 적어 노래를 채워야 할 때 사진 한 장 최대 길이(초)
 VIDEO_EXT = {".mp4", ".mov", ".m4v", ".avi", ".mkv"}
 PHOTO_EXT = {".jpg", ".jpeg", ".png", ".heic", ".heif", ".webp"}
 ENC = ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
@@ -119,7 +120,8 @@ def photo_clip(m: dict, out: Path, i: int, sec: float = PHOTO_SEC) -> float:
     img = photo_frame(m["path"], out.with_suffix(".jpg"))
     frames = int(sec * FPS)
     zoom_in = i % 2 == 0   # 번갈아 확대/축소
-    z = "min(1+0.0009*on,1.12)" if zoom_in else f"max(1.12-0.0009*on,1)"
+    rate = 0.15 / frames   # 길이와 상관없이 끝까지 천천히 1.15배 확대(또는 축소)
+    z = f"min(1+{rate:.6f}*on,1.15)" if zoom_in else f"max(1.15-{rate:.6f}*on,1)"
     run(["ffmpeg", "-y", "-loglevel", "error", "-loop", "1", "-i", str(img),
          "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
          "-filter_complex",
@@ -160,7 +162,7 @@ def plan_durations(media: list, target: float) -> list:
     """조각마다 쓸 길이. 전체가 target(배경음악 길이)에 맞도록 늘리거나 줄인다.
     영상은 실제 길이·MAX_CLIP을, 사진은 2.5~8초를 넘지 않는다."""
     lo = {"video": 2.0, "photo": 2.5}
-    hi = [min(usable_len(m), MAX_CLIP) if m["kind"] == "video" else 8.0 for m in media]
+    hi = [min(usable_len(m), MAX_CLIP) if m["kind"] == "video" else PHOTO_MAX for m in media]
     base = [min(h, MAX_CLIP if m["kind"] == "video" else PHOTO_SEC) for m, h in zip(media, hi)]
     durs = base[:]
     for _ in range(6):   # 상한·하한에 걸린 조각을 빼고 나머지로 다시 나눠 맞춤
