@@ -62,9 +62,12 @@ def city_name(folder: str) -> str:
 def fetch(name: str, work: Path):
     folder = drive_fetch.find_folder(name)
     print(f"폴더: {folder['name']}")
-    media, bgm = [], None
+    media, bgm, seen = [], None, set()
     for f in drive_fetch.list_children(folder["id"]):
         ext = Path(f["name"]).suffix.lower()
+        if f["name"] in seen:   # 같은 파일을 여러 번 올린 경우 한 번만 사용
+            continue
+        seen.add(f["name"])
         if f["name"].lower() == "bgm.mp3" or (ext == ".mp3" and bgm is None):
             bgm = drive_fetch.download(f["id"], work / "bgm.mp3")
         elif ext in VIDEO_EXT or ext in PHOTO_EXT:
