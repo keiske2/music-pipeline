@@ -1,27 +1,46 @@
 {
   "order": [
     "a268df04-a08d-4ab0-bfe7-d00467361fa1.MP4",
+    "IMG_6114.MOV",
     "IMG_5980.HEIC",
     "IMG_5991.HEIC",
     "IMG_5997.HEIC",
     "IMG_6001.HEIC",
     "IMG_5999.HEIC",
     "IMG_6042.HEIC",
-    "IMG_6106.HEIC",
+    "IMG_6043.MOV",
+    "IMG_6046.HEIC",
     "IMG_6049.HEIC",
+    "IMG_6105.MOV",
+    "IMG_6073.HEIC",
+    "IMG_6056.HEIC",
+    "IMG_6057.HEIC",
     "IMG_6047.HEIC",
+    "IMG_6106.HEIC",
     "IMG_6029.HEIC",
+    "IMG_6032.MOV",
+    "IMG_6036.HEIC",
+    "IMG_6034.MOV",
+    "IMG_6037.HEIC",
+    "IMG_6033.MOV",
     "IMG_6030.HEIC",
+    "IMG_6035.MOV",
+    "IMG_6038.MOV",
+    "IMG_6039.MOV",
+    "IMG_6118.HEIC",
     "IMG_6115.HEIC",
-    "IMG_6121.HEIC"
+    "IMG_6111.MOV",
+    "IMG_6121.HEIC",
+    "IMG_6130.HEIC"
   ],
-  "skip": ["IMG_5990.PNG", "IMG_6110.HEIC"],
+  "skip": ["IMG_5990.PNG", "IMG_6109.HEIC", "IMG_6110.HEIC", "IMG_6101.HEIC", "IMG_6048.HEIC"],
   "captions": {
     "a268df04-a08d-4ab0-bfe7-d00467361fa1.MP4": "Ruta al norte de Chile",
     "IMG_5980.HEIC": "Desierto de Atacama",
     "IMG_5991.HEIC": "Gigante de Atacama",
-    "IMG_6049.HEIC": "Cerro Dragón, Iquique",
+    "IMG_6046.HEIC": "Cerro Dragón, Iquique",
     "IMG_6029.HEIC": "Mariscos del Pacífico",
-    "IMG_6115.HEIC": "Costa del Pacífico"
+    "IMG_6038.MOV": "Iquique",
+    "IMG_6118.HEIC": "Costa del Pacífico"
   }
 }
